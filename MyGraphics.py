@@ -8,7 +8,6 @@ from matplotlib.ticker import MaxNLocator
 # Set the backend to Qt for compatibility with PySide6
 mpl.use('QtAgg')
 
-
 def data_reading():
     with open("settings.json", 'r') as f:
         f = json.load(f)
@@ -27,23 +26,65 @@ def data_reading():
     GK = GK[:min_length]
     return GK, NML1, NML2, NML3, DEPTH
 
-
 def plot_graph_smart():
     GK, NML1, NML2, NML3, DEPTH = data_reading()
-    fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, figsize=(6, 15), dpi=100, facecolor='white',width_ratios=[1, 1, 0.2])
+    fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, figsize=(8, 15), dpi=100, facecolor='white', gridspec_kw={'width_ratios': [1, 1, 0.2]})
 
-    ax1.plot(GK, -DEPTH, color='red')
-    ax2.plot(NML1, -DEPTH, color='red')
-    ax2.plot(NML2, -DEPTH, color='blue')
-    ax2.plot(NML3, -DEPTH, color='aqua')
+    # Пользовательские границы для осей X (минимальные и максимальные значения для растяжения)
+    user_min_gk = -1  # Минимальное значение для оси X графика GK
+    user_max_gk = 10   # Максимальное значение для оси X графика GK
+    user_min_x = -1  # Минимальное значение для оси X графика NML
+    user_max_x = 200   # Максимальное значение для оси X графика NML
 
+    # Устанавливаем начальные пределы осей X на основе пользовательских значений
+    ax1.set_xlim(user_min_gk, user_max_gk)
+    ax2.set_xlim(user_min_x, user_max_x)
+
+    # Основной график для ax1
+    mask_inside_GK = (GK >= user_min_gk) & (GK <= user_max_gk)
+    ax1.plot(np.ma.masked_where(~mask_inside_GK, GK), -DEPTH, color='red')
+
+    # Основной график для ax2
+    mask_inside_NML1 = (NML1 >= user_min_x) & (NML1 <= user_max_x)
+    ax2.plot(np.ma.masked_where(~mask_inside_NML1, NML1), -DEPTH, color='red')
+
+    mask_inside_NML2 = (NML2 >= user_min_x) & (NML2 <= user_max_x)
+    ax2.plot(np.ma.masked_where(~mask_inside_NML2, NML2), -DEPTH, color='blue')
+
+    mask_inside_NML3 = (NML3 >= user_min_x) & (NML3 <= user_max_x)
+    ax2.plot(np.ma.masked_where(~mask_inside_NML3, NML3), -DEPTH, color='aqua')
+
+    # Переносим линии справа налево как пунктирные линии несколько раз, если они выходят за пределы
+    def wrap_lines(values, depth, limit_min, limit_max, ax, color, linestyle):
+        shift = (limit_max - limit_min)
+        while np.any(values > limit_max):
+            excess_values = values > limit_max
+            wrapped_values = np.where(excess_values, values - shift, np.nan)
+            ax.plot(wrapped_values, -depth, color=color, linestyle=linestyle, linewidth=0.8)
+            values = wrapped_values  # обновляем значения для дальнейшего переноса
+        while np.any(values < limit_min):
+            excess_values = values < limit_min
+            wrapped_values = np.where(excess_values, values + shift, np.nan)
+            ax.plot(wrapped_values, -depth, color=color, linestyle=linestyle, linewidth=0.8)
+            values = wrapped_values  # обновляем значения для дальнейшего переноса
+
+    # Для графика GK
+    wrap_lines(GK, DEPTH, user_min_gk, user_max_gk, ax1, color='red', linestyle=':')
+
+    # Для графика NML1
+    wrap_lines(NML1, DEPTH, user_min_x, user_max_x, ax2, color='red', linestyle=':')
+
+    # Для графика NML2
+    wrap_lines(NML2, DEPTH, user_min_x, user_max_x, ax2, color='blue', linestyle=':')
+
+    # Для графика NML3
+    wrap_lines(NML3, DEPTH, user_min_x, user_max_x, ax2, color='aqua', linestyle=':')
+
+    # Название графиков
     ax1.set_title(f'GK\n{min(GK)}-{max(GK)}', fontsize=8, color='tab:red')
-    ax2.text(0.5, 1.065, f'NML1\n{min(NML1)} - {max(NML1)}', ha='center', fontsize=8, color='red',
-             transform=ax2.transAxes)
-    ax2.text(0.5, 1.035, f'NML2\n{min(NML2)} - {max(NML2)}', ha='center', fontsize=8, color='blue',
-             transform=ax2.transAxes)
-    ax2.text(0.5, 1.005, f'NML3\n{min(NML3)} - {max(NML3)}', ha='center', fontsize=8, color='aqua',
-             transform=ax2.transAxes)
+    ax2.text(0.5, 1.065, f'NML1\n{min(NML1)} - {max(NML1)}', ha='center', fontsize=8, color='red', transform=ax2.transAxes)
+    ax2.text(0.5, 1.035, f'NML2\n{min(NML2)} - {max(NML2)}', ha='center', fontsize=8, color='blue', transform=ax2.transAxes)
+    ax2.text(0.5, 1.005, f'NML3\n{min(NML3)} - {max(NML3)}', ha='center', fontsize=8, color='aqua', transform=ax2.transAxes)
     ax3.set_title(f'\nСтатус\nколлектора', fontsize=8, color='tab:green')
 
     fig.subplots_adjust(wspace=0)
@@ -79,40 +120,39 @@ def plot_graph_smart():
         nonlocal current_grid_interval
         base_scale = 1.1
 
-        # Check if the mouse is over any of the axes
         if event.inaxes is None:
             return
 
         # Handle zooming when Ctrl is pressed
         if event.key == 'control':
             cur_ylim = ax1.get_ylim()
+            cur_xlim1 = ax1.get_xlim()
+            cur_xlim2 = ax2.get_xlim()
+            xdata = event.xdata
             ydata = event.ydata
 
             if event.button == 'up':
                 scale_factor = 1 / base_scale
-                current_grid_interval /= base_scale  # Decrease grid interval
+                current_grid_interval /= base_scale
             elif event.button == 'down':
                 scale_factor = base_scale
-                current_grid_interval *= base_scale  # Increase grid interval
+                current_grid_interval *= base_scale
             else:
                 scale_factor = 1
 
+            # Adjusting y-axis limits
             new_height = (cur_ylim[1] - cur_ylim[0]) * scale_factor
             rely = (cur_ylim[1] - ydata) / (cur_ylim[1] - cur_ylim[0])
-
             new_ylim = [ydata - new_height * (1 - rely), ydata + new_height * rely]
 
-            # Clamp the grid interval to be between 1 and 10 and ensure it is a whole number
+            # Updating grid intervals and limits
             current_grid_interval = clamp(round(current_grid_interval), 0.1, 10)
 
-            # Update y-limits and grid intervals for all axes
             for ax in [ax1, ax2, ax3]:
                 ax.set_ylim(new_ylim)
                 ax.set_yticks(np.arange(new_ylim[0], new_ylim[1], current_grid_interval))
                 ax.grid(True, which='both', linestyle='--', color='gray')
                 ax.yaxis.set_major_locator(MaxNLocator(integer=True))  # Ensure only integer ticks
-
-        # Handle regular scrolling (without Ctrl) - only change the view, not the grid
         else:
             cur_ylim = ax1.get_ylim()
             delta_y = (cur_ylim[1] - cur_ylim[0]) * 0.1
@@ -124,17 +164,13 @@ def plot_graph_smart():
             else:
                 return
 
-            # Update y-limits without changing the grid
             for ax in [ax1, ax2, ax3]:
                 ax.set_ylim(new_ylim)
-                ax.yaxis.set_major_locator(MaxNLocator(integer=True))  # Ensure only integer ticks
-
+                ax.yaxis.set_major_locator(MaxNLocator(integer=True))
         fig.canvas.draw_idle()
 
-    # Capture the scroll event
     fig.canvas.mpl_connect('scroll_event', zoom)
 
     plt.show()
-
 
 plot_graph_smart()
