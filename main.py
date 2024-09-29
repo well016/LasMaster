@@ -1,11 +1,16 @@
 import sys
-from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QDialog, QTreeWidgetItem
+from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QDialog, QTreeWidgetItem, QVBoxLayout,QWidget
 from PySide6.QtWidgets import QDialogButtonBox
+
+
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
+from plot import Plot
+from MyGraphics import plot_graph_smart
+
 
 from Design.ui_main import Ui_mainWindow
 from Design.ui_version import Ui_QVersion
 from Design.ui_nml_param import Ui_Nml_param
-
 
 import json
 import lasio
@@ -43,7 +48,7 @@ class LasMaster(QMainWindow):
     def add_curve(self):
         curve = self.ui.qb_curves.currentText()
         with open("settings.json", 'r') as f:
-            curves=json.load(f)
+            curves = json.load(f)
 
         with open("settings.json", 'w') as f:
             curves.update({curve: self.file_name})
@@ -114,13 +119,24 @@ class LasMaster(QMainWindow):
             print(f"Ошибка чтения JSON-файла {settings_file}")
 
     def build_plot(self):
-        pass
+        self.fig = plot_graph_smart()
+        self.companovka_for_plot = QVBoxLayout(self.ui.qw_interpret)
+        self.ui.verticalLayout.addLayout(self.companovka_for_plot)
+        self.canvas = Plot(self.fig)
+        self.companovka_for_plot.addWidget(self.canvas)
+
+        self.toolbar = NavigationToolbar(self.canvas, self)
+        self.companovka_for_plot.addWidget(self.toolbar)
+
+
+
+
 
     def open_version(self):
         self.version = QDialog()
         self.version.ui = Ui_QVersion()
         self.version.ui.setupUi(self.version)
-        #Считываем версию из JSON
+        # Считываем версию из JSON
         with open("settings.json", "r") as f:
             self.version.ui.label_4.setText(json.load(f)["VERSION"])
         self.version.show()
