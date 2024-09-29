@@ -4,7 +4,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 import lasio
 from matplotlib.ticker import MaxNLocator
-
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QApplication
 # Set the backend to Qt for compatibility with PySide6
 mpl.use('QtAgg')
 
@@ -32,9 +33,9 @@ def plot_graph_smart():
 
     # Пользовательские границы для осей X (минимальные и максимальные значения для растяжения)
     user_min_gk = -1  # Минимальное значение для оси X графика GK
-    user_max_gk = 10   # Максимальное значение для оси X графика GK
+    user_max_gk = 20   # Максимальное значение для оси X графика GK
     user_min_x = -1  # Минимальное значение для оси X графика NML
-    user_max_x = 200   # Максимальное значение для оси X графика NML
+    user_max_x = 300   # Максимальное значение для оси X графика NML
 
     # Устанавливаем начальные пределы осей X на основе пользовательских значений
     ax1.set_xlim(user_min_gk, user_max_gk)
@@ -60,11 +61,6 @@ def plot_graph_smart():
         while np.any(values > limit_max):
             excess_values = values > limit_max
             wrapped_values = np.where(excess_values, values - shift, np.nan)
-            ax.plot(wrapped_values, -depth, color=color, linestyle=linestyle, linewidth=0.8)
-            values = wrapped_values  # обновляем значения для дальнейшего переноса
-        while np.any(values < limit_min):
-            excess_values = values < limit_min
-            wrapped_values = np.where(excess_values, values + shift, np.nan)
             ax.plot(wrapped_values, -depth, color=color, linestyle=linestyle, linewidth=0.8)
             values = wrapped_values  # обновляем значения для дальнейшего переноса
 
@@ -122,9 +118,13 @@ def plot_graph_smart():
 
         if event.inaxes is None:
             return
-
+        print(f"Zoom event: {event}, key: {event.key}, button: {event.button}")
         # Handle zooming when Ctrl is pressed
-        if event.key == 'control':
+        modifiers = QApplication.keyboardModifiers()  # Проверяем, какие модификаторы клавиш активны
+
+        # Проверяем, что нажат Ctrl
+        if modifiers == Qt.ControlModifier:
+            print("Ctrl key is pressed")  # Отладочный вывод
             cur_ylim = ax1.get_ylim()
             cur_xlim1 = ax1.get_xlim()
             cur_xlim2 = ax2.get_xlim()
@@ -171,6 +171,10 @@ def plot_graph_smart():
 
     fig.canvas.mpl_connect('scroll_event', zoom)
 
-    plt.show()
+    # plt.show()
+    return fig
 
-plot_graph_smart()
+
+if __name__ == '__main__':
+    plot_graph_smart()
+    plt.show()
