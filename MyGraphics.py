@@ -48,11 +48,17 @@ def get_analysis_collector():
     collector_status = []
     for i, j in zip(diff_1_2, diff_2_3):
         if i >= diff_nml and j >= diff_nml:
-            collector_status.append('Colltector')
+            collector_status.append('Collector')
         else:
-            collector_status.append('Not Colltector')
+            collector_status.append('Not Collector')
+    ang=[]
+    for gk in GK:
+        ag=round((gk-gk_min)/(gk_max-gk_min),3)
+
+        ang.append(ag)
 
     return collector_status
+
 
 
 def plot_graph_smart():
@@ -83,6 +89,22 @@ def plot_graph_smart():
 
     mask_inside_NML3 = (NML3 >= user_min_x) & (NML3 <= user_max_x)
     ax2.plot(np.ma.masked_where(~mask_inside_NML3, NML3), -DEPTH, color='aqua')
+
+
+    collector_status = get_analysis_collector()
+    # Основной график для ax3
+    step = 10
+
+    # Adjust the loop to iterate over the depth values with the given step
+    for i in range(0, len(DEPTH) - 1, step):
+        # Determine the color based on the collector status
+        color = 'green' if collector_status[i] == 'Collector' else 'black'
+
+        # Fill between the current and next step depth range
+        ax3.fill_betweenx([-DEPTH[i], -DEPTH[min(i + step, len(DEPTH) - 1)]], 0, 1, color=color)
+
+    ax3.set_xlim(0, 1)
+
 
     # Переносим линии справа налево как пунктирные линии несколько раз, если они выходят за пределы
     def wrap_lines(values, depth, limit_min, limit_max, ax, color, linestyle):
