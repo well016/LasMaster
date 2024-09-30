@@ -6,8 +6,10 @@ import lasio
 from matplotlib.ticker import MaxNLocator
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication
+
 # Set the backend to Qt for compatibility with PySide6
 mpl.use('QtAgg')
+
 
 def data_reading():
     with open("settings.json", 'r') as f:
@@ -27,16 +29,43 @@ def data_reading():
     GK = GK[:min_length]
     return GK, NML1, NML2, NML3, DEPTH
 
+
+def get_analysis_collector():
+    GK, NML1, NML2, NML3, DEPTH = data_reading()
+    with open("settings.json", 'r') as f:
+        f = json.load(f)
+    gk_min = f["GK_MIN"]
+    gk_max = f["GK_MAX"]
+    diff_nml = f["DIFF_NML"]
+    diff_1_2 = []
+    diff_2_3 = []
+    for nml1, nml2 in zip(NML1, NML2):
+        diff = round((abs(nml1 - nml2) / (nml1)) * 100, 2)
+        diff_1_2.append(diff)
+    for nml2, nml3 in zip(NML2, NML3):
+        diff = round((abs(nml2 - nml3) / (nml2)) * 100, 2)
+        diff_2_3.append(diff)
+    collector_status = []
+    for i, j in zip(diff_1_2, diff_2_3):
+        if i >= diff_nml and j >= diff_nml:
+            collector_status.append('Colltector')
+        else:
+            collector_status.append('Not Colltector')
+
+    return collector_status
+
+
 def plot_graph_smart():
     GK, NML1, NML2, NML3, DEPTH = data_reading()
-    fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, figsize=(8, 15), dpi=100, facecolor='white', gridspec_kw={'width_ratios': [1, 1, 0.2]})
+    fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, figsize=(8, 15), dpi=100, facecolor='white',
+                                        gridspec_kw={'width_ratios': [1, 1, 0.2]})
 
     # Пользовательские границы для осей X (минимальные и максимальные значения для растяжения)
     user_min_gk = -1  # Минимальное значение для оси X графика GK
-    user_max_gk = 20   # Максимальное значение для оси X графика GK
+    user_max_gk = 20  # Максимальное значение для оси X графика GK
     user_min_x = -1  # Минимальное значение для оси X графика NML
-    user_max_x = 300   # Максимальное значение для оси X графика NML
-
+    user_max_x = 300  # Максимальное значение для оси X графика NML
+    print(get_analysis_collector())
     # Устанавливаем начальные пределы осей X на основе пользовательских значений
     ax1.set_xlim(user_min_gk, user_max_gk)
     ax2.set_xlim(user_min_x, user_max_x)
@@ -78,9 +107,12 @@ def plot_graph_smart():
 
     # Название графиков
     ax1.set_title(f'GK\n{min(GK)}-{max(GK)}', fontsize=8, color='tab:red')
-    ax2.text(0.5, 1.065, f'NML1\n{min(NML1)} - {max(NML1)}', ha='center', fontsize=8, color='red', transform=ax2.transAxes)
-    ax2.text(0.5, 1.035, f'NML2\n{min(NML2)} - {max(NML2)}', ha='center', fontsize=8, color='blue', transform=ax2.transAxes)
-    ax2.text(0.5, 1.005, f'NML3\n{min(NML3)} - {max(NML3)}', ha='center', fontsize=8, color='aqua', transform=ax2.transAxes)
+    ax2.text(0.5, 1.065, f'NML1\n{min(NML1)} - {max(NML1)}', ha='center', fontsize=8, color='red',
+             transform=ax2.transAxes)
+    ax2.text(0.5, 1.035, f'NML2\n{min(NML2)} - {max(NML2)}', ha='center', fontsize=8, color='blue',
+             transform=ax2.transAxes)
+    ax2.text(0.5, 1.005, f'NML3\n{min(NML3)} - {max(NML3)}', ha='center', fontsize=8, color='aqua',
+             transform=ax2.transAxes)
     ax3.set_title(f'\nСтатус\nколлектора', fontsize=8, color='tab:green')
 
     fig.subplots_adjust(wspace=0)
@@ -118,13 +150,13 @@ def plot_graph_smart():
 
         if event.inaxes is None:
             return
-        print(f"Zoom event: {event}, key: {event.key}, button: {event.button}")
+        # print(f"Zoom event: {event}, key: {event.key}, button: {event.button}")
         # Handle zooming when Ctrl is pressed
         modifiers = QApplication.keyboardModifiers()  # Проверяем, какие модификаторы клавиш активны
 
         # Проверяем, что нажат Ctrl
         if modifiers == Qt.ControlModifier:
-            print("Ctrl key is pressed")  # Отладочный вывод
+            # print("Ctrl key is pressed")
             cur_ylim = ax1.get_ylim()
             cur_xlim1 = ax1.get_xlim()
             cur_xlim2 = ax2.get_xlim()
@@ -170,6 +202,7 @@ def plot_graph_smart():
         fig.canvas.draw_idle()
 
     fig.canvas.mpl_connect('scroll_event', zoom)
+    print('График построен успешно')
 
     # plt.show()
     return fig
