@@ -1,9 +1,12 @@
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QDialog, QTreeWidgetItem, QVBoxLayout,QWidget
-from PySide6.QtWidgets import QDialogButtonBox
-
+from PySide6.QtWidgets import QDialogButtonBox,QHeaderView
+from PySide6.QtGui import QStandardItemModel, QStandardItem
 
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
+import pandas as pd
+
+import MyGraphics
 from plot import Plot
 from MyGraphics import plot_graph_smart
 
@@ -14,6 +17,8 @@ from Design.ui_nml_param import Ui_Nml_param
 
 import json
 import lasio
+
+from template import collector_list
 
 
 class LasMaster(QMainWindow):
@@ -36,6 +41,8 @@ class LasMaster(QMainWindow):
         self.ui.pb_add_curve.clicked.connect(self.add_curve)
         self.ui.pb_setting_meth.clicked.connect(self.setting_meth)
         self.ui.pb_build.clicked.connect(self.build_plot)
+        self.ui.pb_excel.clicked.connect(self.save_excel)
+
 
 
     def import_las(self):
@@ -140,26 +147,56 @@ class LasMaster(QMainWindow):
             print(f"Ошибка чтения JSON-файла {settings_file}")
 
     def build_plot(self):
-        if self.canvas==None:
-            self.fig = plot_graph_smart()
+        # Check if the layout already exists
+        if not hasattr(self, 'companovka_for_plot') or self.companovka_for_plot is None:
+            # Initialize the layout if it doesn't exist
             self.companovka_for_plot = QVBoxLayout(self.ui.qw_interpret)
             self.ui.verticalLayout.addLayout(self.companovka_for_plot)
-            self.canvas = Plot(self.fig)
-            self.companovka_for_plot.addWidget(self.canvas)
-
-            self.toolbar = NavigationToolbar(self.canvas, self)
-            self.companovka_for_plot.addWidget(self.toolbar)
-
         else:
-            self.fig = plot_graph_smart()
-            self.canvas.fig = self.fig
-            self.canvas.draw()
+            # Clear the existing layout's contents
+            while self.companovka_for_plot.count():
+                item = self.companovka_for_plot.takeAt(0)
+                widget = item.widget()
+                if widget is not None:
+                    widget.setParent(None)  # Remove the widget from its parent
 
+        # Create a new plot and add it to the existing layout
+        self.fig = plot_graph_smart()
+        self.canvas = Plot(self.fig)
+        self.companovka_for_plot.addWidget(self.canvas)
 
+        # Create and add a new toolbar for the updated plot
+        self.toolbar = NavigationToolbar(self.canvas, self)
+        self.companovka_for_plot.addWidget(self.toolbar)
+        self.collector_status_table()
 
+    def collector_status_table(self):
+        # Two separate lists
+        collector_status = MyGraphics.get_analysis_collector()
+        GK, NML1, NML2, NML3, DEPTH = MyGraphics.data_reading()
+        depths = DEPTH
+        statuses = collector_status  # Example statuses
 
+        # Combine the lists into a single data structure
+        data = list(zip(depths, statuses))
 
+        # Create the model
+        model = QStandardItemModel(len(data), 2)  # Number of rows, Number of columns
+        model.setHorizontalHeaderLabels(["Глубина,м", "Статус коллектора"])
 
+        # Populate the model with data from the combined lists
+        for row, (depth, status) in enumerate(data):
+            model.setItem(row, 0, QStandardItem(str(depth)))  # Set the depth in the first column
+            model.setItem(row, 1, QStandardItem(str(status)))  # Set the status in the second column
+
+        # Set the model to the QTableView
+        self.ui.qv_table_status.setModel(model)
+
+        # Hide the row numbering (vertical header)
+        self.ui.qv_table_status.verticalHeader().setVisible(False)
+
+        # Make the columns resize based on the window size
+        self.ui.qv_table_status.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
 
     def open_version(self):
@@ -170,6 +207,30 @@ class LasMaster(QMainWindow):
         with open("settings.json", "r") as f:
             self.version.ui.label_4.setText(json.load(f)["VERSION"])
         self.version.show()
+
+    def save_excel(self):
+        collector_status=MyGraphics.get_analysis_collector()
+        GK, NML1, NML2, NML3, DEPTH= MyGraphics.data_reading()
+        data = {
+            "Глубина,м": DEPTH,
+            "Статус Коллектора": collector_status
+        }
+
+        df = pd.DataFrame(data)
+        # Открытие диалогового окна для выбора пути сохранения
+        app = QApplication.instance()  # Проверка, запущен ли уже экземпляр QApplication
+        if app is None:
+            app = QApplication([])
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getSaveFileName(None, "Сохранить файл как", "",
+                                                   "Excel Files (*.xlsx);;All Files (*)", options=options)
+
+        if file_path:  # Если пользователь выбрал путь
+            if not file_path.endswith(".xlsx"):
+                file_path += ".xlsx"
+            df.to_excel(file_path, index=False)
+
+
 
 
 if __name__ == "__main__":
