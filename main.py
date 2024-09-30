@@ -23,6 +23,7 @@ class LasMaster(QMainWindow):
         self.curves = None
         self.file_name = None
         self.las = None
+        self.canvas = None
 
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
@@ -35,6 +36,7 @@ class LasMaster(QMainWindow):
         self.ui.pb_add_curve.clicked.connect(self.add_curve)
         self.ui.pb_setting_meth.clicked.connect(self.setting_meth)
         self.ui.pb_build.clicked.connect(self.build_plot)
+
 
     def import_las(self):
         try:
@@ -66,10 +68,29 @@ class LasMaster(QMainWindow):
 
         # Загружаем параметры из JSON при открытии диалога
         self.load_param()
+        # Авто подсчет максимального и минимального ГК
+        def auto_gk():
+            self.nml_param.ui.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.save_param)
+            with open("settings.json", 'r') as f:
+                f = json.load(f)
+            GK_las = lasio.read(f["GK"])
+            GK = GK_las['GK']
+            DEPTH = GK_las['DEPT']
+            min_length = min(len(GK), len(DEPTH))
+            DEPTH = DEPTH[:min_length]
+            GK = GK[:min_length]
+            gk=[]
+            for i, j in zip(GK, DEPTH):
+                if j >= self.nml_param.ui.ds_min.value() and j <= self.nml_param.ui.ds_max.value():
+                    gk.append(i)
+            self.nml_param.ui.ds_gk_min.setValue(min(gk))
+            self.nml_param.ui.ds_gk_max.setValue(max(gk))
 
         # Подключаем сигналы для кнопок
         self.nml_param.ui.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.save_param)
         self.nml_param.ui.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.nml_param.close)
+        self.nml_param.ui.pb_auto_gk.clicked.connect(auto_gk)
+
 
         self.nml_param.show()
 
@@ -119,14 +140,23 @@ class LasMaster(QMainWindow):
             print(f"Ошибка чтения JSON-файла {settings_file}")
 
     def build_plot(self):
-        self.fig = plot_graph_smart()
-        self.companovka_for_plot = QVBoxLayout(self.ui.qw_interpret)
-        self.ui.verticalLayout.addLayout(self.companovka_for_plot)
-        self.canvas = Plot(self.fig)
-        self.companovka_for_plot.addWidget(self.canvas)
+        if self.canvas==None:
+            self.fig = plot_graph_smart()
+            self.companovka_for_plot = QVBoxLayout(self.ui.qw_interpret)
+            self.ui.verticalLayout.addLayout(self.companovka_for_plot)
+            self.canvas = Plot(self.fig)
+            self.companovka_for_plot.addWidget(self.canvas)
 
-        self.toolbar = NavigationToolbar(self.canvas, self)
-        self.companovka_for_plot.addWidget(self.toolbar)
+            self.toolbar = NavigationToolbar(self.canvas, self)
+            self.companovka_for_plot.addWidget(self.toolbar)
+
+        else:
+            self.fig = plot_graph_smart()
+            self.canvas.fig = self.fig
+            self.canvas.draw()
+
+
+
 
 
 
