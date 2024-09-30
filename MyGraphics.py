@@ -129,9 +129,9 @@ def plot_graph_smart():
 
     # Название графиков
     ax1.set_title(f'GK\n{min(GK)}-{max(GK)}', fontsize=8, color='tab:red')
-    ax2.text(0.5, 1.065, f'NML1\n{min(NML1)} - {max(NML1)}', ha='center', fontsize=8, color='red',
+    ax2.text(0.5, 1.09, f'NML1\n{min(NML1)} - {max(NML1)}', ha='center', fontsize=8, color='red',
              transform=ax2.transAxes)
-    ax2.text(0.5, 1.035, f'NML2\n{min(NML2)} - {max(NML2)}', ha='center', fontsize=8, color='blue',
+    ax2.text(0.5, 1.05, f'NML2\n{min(NML2)} - {max(NML2)}', ha='center', fontsize=8, color='blue',
              transform=ax2.transAxes)
     ax2.text(0.5, 1.005, f'NML3\n{min(NML3)} - {max(NML3)}', ha='center', fontsize=8, color='aqua',
              transform=ax2.transAxes)
