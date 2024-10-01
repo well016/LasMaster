@@ -1,0 +1,14 @@
+{
+    "VERSION": "ALPHA 1.1",
+    "DEEP_MIN": 700.0,
+    "DEEP_MAX": 1200.0,
+    "GK_MIN": 0.36,
+    "GK_MAX": 96.29,
+    "DIFF_NML": 3.0,
+    "GK": "C:/Users/well0/Desktop/PROJECT_ALL/LasMaster/LAS/GK.las",
+    "DEPT": "C:/Users/well0/Desktop/PROJECT_ALL/LasMaster/LAS/GK.las",
+    "NML1": "C:/Users/well0/Desktop/PROJECT_ALL/LasMaster/LAS/NML.las",
+    "NML2": "C:/Users/well0/Desktop/PROJECT_ALL/LasMaster/LAS/NML.las",
+    "NML3": "C:/Users/well0/Desktop/PROJECT_ALL/LasMaster/LAS/NML.las",
+    "": "C:/Users/well0/Desktop/PROJECT_ALL/LasMaster/LAS/GK.las"
+}

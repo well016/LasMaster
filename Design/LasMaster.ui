@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>mainWindow</class>
+ <widget class="QMainWindow" name="mainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>461</width>
+    <height>550</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>461</width>
+    <height>424</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>LasMaster</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../IMAGE/icon.qrc">
+    <normaloff>:/programlogo.png</normaloff>:/programlogo.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="minimumSize">
+    <size>
+     <width>300</width>
+     <height>300</height>
+    </size>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>10</pointsize>
+        <italic>false</italic>
+        <bold>false</bold>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+       </font>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LayoutDirection::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="tabPosition">
+       <enum>QTabWidget::TabPosition::North</enum>
+      </property>
+      <property name="tabShape">
+       <enum>QTabWidget::TabShape::Rounded</enum>
+      </property>
+      <property name="currentIndex">
+       <number>2</number>
+      </property>
+      <property name="elideMode">
+       <enum>Qt::TextElideMode::ElideRight</enum>
+      </property>
+      <property name="usesScrollButtons">
+       <bool>true</bool>
+      </property>
+      <property name="documentMode">
+       <bool>false</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>false</bool>
+      </property>
+      <property name="movable">
+       <bool>true</bool>
+      </property>
+      <property name="tabBarAutoHide">
+       <bool>false</bool>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Входные данные</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="3" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item alignment="Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop">
+             <widget class="QComboBox" name="qb_method">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>208</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>248</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QComboBox {
+    border-radius: 3px;
+	background-color:rgb(213, 232, 255)
+}
+
+QComboBox:editable {
+    background: rgb(85, 170, 255);
+}
+
+/* QComboBox gets the &quot;on&quot; state when the popup is open */
+QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+    background: rgb(170, 170, 255);
+}
+
+QComboBox:on { /* shift the text when the popup opens */
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+
+    border-left-width: 1px;
+    border-left-color: darkgray;
+    border-left-style: solid; /* just a single line */
+    border-top-right-radius: 3px; /* same radius as the QComboBox */
+    border-bottom-right-radius: 3px;
+}
+
+
+
+
+
+QComboBox QAbstractItemView {
+    border: 2px solid darkgray;
+    selection-background-color: rgb(78, 119, 255);
+}</string>
+              </property>
+              <property name="currentText">
+               <string/>
+              </property>
+              <property name="currentIndex">
+               <number>-1</number>
+              </property>
+              <property name="placeholderText">
+               <string>Выбор метода интерпретации</string>
+              </property>
+              <property name="duplicatesEnabled">
+               <bool>false</bool>
+              </property>
+              <property name="modelColumn">
+               <number>0</number>
+              </property>
+              <item>
+               <property name="text">
+                <string>Авто Итерператиция по ГК и ЯМК</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item alignment="Qt::AlignmentFlag::AlignLeft">
+             <widget class="QPushButton" name="pb_setting_meth">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>200</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+  border-radius: 8px;
+  outline: 0px;
+  background-color:rgb(213, 232, 255);
+  border: 1px solid rgb(0, 170, 255)
+}
+
+QPushButton:pressed {
+  background-color: rgb(240, 240, 240);
+  border: 2px solid rgb(0, 85, 255);
+ }
+QPushButton:hover {
+  background-color:rgba(213, 232, 255, 150);
+ }</string>
+              </property>
+              <property name="text">
+               <string>Настроить параметры метода</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="sizeConstraint">
+             <enum>QLayout::SizeConstraint::SetMaximumSize</enum>
+            </property>
+            <item alignment="Qt::AlignmentFlag::AlignLeft">
+             <widget class="QPushButton" name="pb_import_las">
+              <property name="minimumSize">
+               <size>
+                <width>123</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>145</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+  border-radius: 8px;
+  outline: 0px;
+  background-color:rgb(213, 232, 255);
+  border: 1px solid rgb(0, 170, 255)
+}
+
+QPushButton:pressed {
+  background-color: rgb(240, 240, 240);
+  border: 2px solid rgb(0, 85, 255);
+ }
+QPushButton:hover {
+  background-color:rgba(213, 232, 255, 150);
+ }</string>
+              </property>
+              <property name="text">
+               <string>Импорт LAS</string>
+              </property>
+             </widget>
+            </item>
+            <item alignment="Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop">
+             <widget class="QComboBox" name="qb_curves">
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QComboBox {
+    border-radius: 3px;
+	background-color:rgb(213, 232, 255)
+}
+
+QComboBox:editable {
+    background: rgb(85, 170, 255);
+}
+
+/* QComboBox gets the &quot;on&quot; state when the popup is open */
+QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+    background: rgb(170, 170, 255);
+}
+
+QComboBox:on { /* shift the text when the popup opens */
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+
+    border-left-width: 1px;
+    border-left-color: darkgray;
+    border-left-style: solid; /* just a single line */
+    border-top-right-radius: 3px; /* same radius as the QComboBox */
+    border-bottom-right-radius: 3px;
+}
+
+
+
+
+
+QComboBox QAbstractItemView {
+    border: 2px solid darkgray;
+    selection-background-color: rgb(78, 119, 255);
+}</string>
+              </property>
+              <property name="placeholderText">
+               <string>Выбор кривой</string>
+              </property>
+              <property name="frame">
+               <bool>false</bool>
+              </property>
+              <property name="modelColumn">
+               <number>0</number>
+              </property>
+             </widget>
+            </item>
+            <item alignment="Qt::AlignmentFlag::AlignLeft">
+             <widget class="QPushButton" name="pb_add_curve">
+              <property name="minimumSize">
+               <size>
+                <width>122</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>145</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="sizeIncrement">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+  border-radius: 8px;
+  outline: 0px;
+  background-color:rgb(213, 232, 255);
+  border: 1px solid rgb(0, 170, 255)
+}
+
+QPushButton:pressed {
+  background-color: rgb(240, 240, 240);
+  border: 2px solid rgb(0, 85, 255);
+ }
+QPushButton:hover {
+  background-color:rgba(213, 232, 255, 150);
+ }</string>
+              </property>
+              <property name="text">
+               <string>Добавить кривую</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="1">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTreeWidget" name="tw_curves">
+          <property name="animated">
+           <bool>false</bool>
+          </property>
+          <property name="columnCount">
+           <number>2</number>
+          </property>
+          <attribute name="headerCascadingSectionResizes">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="headerMinimumSectionSize">
+           <number>40</number>
+          </attribute>
+          <attribute name="headerHighlightSections">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="headerShowSortIndicator" stdset="0">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Кривая</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Расположение файла</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignmentFlag::AlignHCenter">
+         <widget class="QPushButton" name="pb_delete">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>30</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+  border-radius: 8px;
+  outline: 0px;
+  background-color:rgb(213, 232, 255);
+  border: 1px solid rgb(0, 170, 255)
+}
+
+QPushButton:pressed {
+  background-color: rgb(240, 240, 240);
+  border: 2px solid rgb(0, 85, 255);
+ }
+QPushButton:hover {
+  background-color:rgba(213, 232, 255, 150);
+ }</string>
+          </property>
+          <property name="text">
+           <string>Очистить кривые</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Orientation::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item alignment="Qt::AlignmentFlag::AlignRight">
+         <widget class="QPushButton" name="pb_build">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>30</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>30</height>
+           </size>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::LayoutDirection::LeftToRight</enum>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+  border-radius: 8px;
+  outline: 0px;
+  background-color:rgb(213, 232, 255);
+  border: 1px solid rgb(0, 170, 255)
+}
+
+QPushButton:pressed {
+  background-color: rgb(240, 240, 240);
+  border: 2px solid rgb(0, 85, 255);
+ }
+QPushButton:hover {
+  background-color:rgba(213, 232, 255, 150);
+ }</string>
+          </property>
+          <property name="text">
+           <string>Построить </string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="interpretator">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <attribute name="title">
+        <string>Планшет</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="sizeConstraint">
+         <enum>QLayout::SizeConstraint::SetMinAndMaxSize</enum>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QWidget" name="qw_interpret" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="out_info">
+       <attribute name="title">
+        <string>Выходные данные</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="1" column="0">
+         <widget class="QPushButton" name="pb_excel">
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+  border-radius: 8px;
+  outline: 0px;
+  background-color:rgb(213, 232, 255);
+  border: 1px solid rgb(0, 170, 255)
+}
+
+QPushButton:pressed {
+  background-color: rgb(240, 240, 240);
+  border: 2px solid rgb(0, 85, 255);
+ }
+QPushButton:hover {
+  background-color:rgba(213, 232, 255, 150);
+ }</string>
+          </property>
+          <property name="text">
+           <string>Экспорт в Excel</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QTableView" name="qv_table_status"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>461</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <widget class="QMenu" name="help">
+    <property name="title">
+     <string>Помощь</string>
+    </property>
+    <addaction name="version_p"/>
+    <addaction name="guide"/>
+   </widget>
+   <widget class="QMenu" name="file">
+    <property name="title">
+     <string>Файл</string>
+    </property>
+    <addaction name="open_p"/>
+    <addaction name="create_p"/>
+    <addaction name="separator"/>
+    <addaction name="save_p"/>
+    <addaction name="save_as_p"/>
+    <addaction name="close_p"/>
+    <addaction name="separator"/>
+    <addaction name="import_p"/>
+    <addaction name="export_p"/>
+   </widget>
+   <widget class="QMenu" name="tools">
+    <property name="title">
+     <string>Инструменты</string>
+    </property>
+    <widget class="QMenu" name="scale_2">
+     <property name="title">
+      <string>Масштаб</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../IMAGE/icon.qrc">
+       <normaloff>:/scale.png</normaloff>:/scale.png</iconset>
+     </property>
+     <addaction name="horizont"/>
+     <addaction name="vertical"/>
+    </widget>
+    <addaction name="scale_2"/>
+   </widget>
+   <addaction name="file"/>
+   <addaction name="tools"/>
+   <addaction name="help"/>
+  </widget>
+  <action name="open_p">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../IMAGE/icon.qrc">
+     <normaloff>:/Open.png</normaloff>:/Open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Открыть проект</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="save_p">
+   <property name="icon">
+    <iconset resource="../IMAGE/icon.qrc">
+     <normaloff>:/Save.png</normaloff>:/Save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Сохранить проект</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="close_p">
+   <property name="icon">
+    <iconset resource="../IMAGE/icon.qrc">
+     <normaloff>:/close.png</normaloff>:/close.png</iconset>
+   </property>
+   <property name="text">
+    <string>Закрыть программу</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="import_p">
+   <property name="icon">
+    <iconset resource="../IMAGE/icon.qrc">
+     <normaloff>:/import.png</normaloff>:/import.png</iconset>
+   </property>
+   <property name="text">
+    <string>Импорт файла</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="export_p">
+   <property name="icon">
+    <iconset resource="../IMAGE/icon.qrc">
+     <normaloff>:/export.png</normaloff>:/export.png</iconset>
+   </property>
+   <property name="text">
+    <string>Экспорт файла</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="save_as_p">
+   <property name="icon">
+    <iconset resource="../IMAGE/icon.qrc">
+     <normaloff>:/save_as.png</normaloff>:/save_as.png</iconset>
+   </property>
+   <property name="text">
+    <string>Сохранить как</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="create_p">
+   <property name="icon">
+    <iconset resource="../IMAGE/icon.qrc">
+     <normaloff>:/Create.png</normaloff>:/Create.png</iconset>
+   </property>
+   <property name="text">
+    <string>Создать проект</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="version_p">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../IMAGE/icon.qrc">
+     <normaloff>:/version.png</normaloff>:/version.png</iconset>
+   </property>
+   <property name="text">
+    <string>Версия ПО</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>10</pointsize>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="guide">
+   <property name="icon">
+    <iconset resource="../IMAGE/icon.qrc">
+     <normaloff>:/Guide.png</normaloff>:/Guide.png</iconset>
+   </property>
+   <property name="text">
+    <string>Инструкция</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>10</pointsize>
+     <bold>false</bold>
+    </font>
+   </property>
+  </action>
+  <action name="horizont">
+   <property name="icon">
+    <iconset resource="../IMAGE/icon.qrc">
+     <normaloff>:/X.png</normaloff>:/X.png</iconset>
+   </property>
+   <property name="text">
+    <string>Масштаб горизонтальный</string>
+   </property>
+  </action>
+  <action name="vertical">
+   <property name="icon">
+    <iconset resource="../IMAGE/icon.qrc">
+     <normaloff>:/Y.png</normaloff>:/Y.png</iconset>
+   </property>
+   <property name="text">
+    <string>Масштаб вертикальный</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../IMAGE/icon.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>pb_import_las</sender>
+   <signal>clicked()</signal>
+   <receiver>import_p</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>83</x>
+     <y>83</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pb_delete</sender>
+   <signal>clicked()</signal>
+   <receiver>tw_curves</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>308</x>
+     <y>347</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>421</x>
+     <y>311</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

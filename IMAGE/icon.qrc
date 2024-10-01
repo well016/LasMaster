@@ -1,0 +1,22 @@
+<RCC>
+  <qresource>
+    <file>minus.svg</file>
+    <file>plus.svg</file>
+    <file>programlogo.png</file>
+    <file>CALCULATOR.png</file>
+    <file>close.png</file>
+    <file>Create.png</file>
+    <file>export.png</file>
+    <file>Guide.png</file>
+    <file>icon.webp</file>
+    <file>import.png</file>
+    <file>LASMASTER.png</file>
+    <file>Open.png</file>
+    <file>Save.png</file>
+    <file>save_as.png</file>
+    <file>scale.png</file>
+    <file>version.png</file>
+    <file>X.png</file>
+    <file>Y.png</file>
+  </qresource>
+</RCC>

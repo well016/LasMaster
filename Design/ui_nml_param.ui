@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Nml_param</class>
+ <widget class="QDialog" name="Nml_param">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>385</width>
+    <height>227</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Параметры метода</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../IMAGE/icon.qrc">
+    <normaloff>:/programlogo.png</normaloff>:/programlogo.png</iconset>
+  </property>
+  <property name="inputMethodHints">
+   <set>Qt::InputMethodHint::ImhNone</set>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout_5">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Интервал глубин для опорных значений</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="ds_min">
+           <property name="styleSheet">
+            <string notr="true">QDoubleSpinBox
+{
+border : 2px solid rgb(0, 170, 255);
+background : white;
+border-radius: 8
+}
+QDoubleSpinBox::hover
+{
+border : 2px solid rgb(0, 170, 255);
+background : rgb(170, 255, 255);
+}
+QDoubleSpinBox::up-button
+{
+
+subcontrol-position:right;
+image: url(:/plus.svg);
+
+}
+QDoubleSpinBox::down-button
+{
+subcontrol-position:left;
+	image: url(:/minus.svg);
+}
+	</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+           <property name="buttonSymbols">
+            <enum>QAbstractSpinBox::ButtonSymbols::UpDownArrows</enum>
+           </property>
+           <property name="prefix">
+            <string>От </string>
+           </property>
+           <property name="suffix">
+            <string> м</string>
+           </property>
+           <property name="minimum">
+            <double>-9999.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>9999.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>0.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="ds_max">
+           <property name="styleSheet">
+            <string notr="true">QDoubleSpinBox
+{
+border : 2px solid rgb(0, 170, 255);
+background : white;
+border-radius: 8
+}
+QDoubleSpinBox::hover
+{
+border : 2px solid rgb(0, 170, 255);
+background : rgb(170, 255, 255);
+}
+QDoubleSpinBox::up-button
+{
+
+subcontrol-position:right;
+image: url(:/plus.svg);
+
+}
+QDoubleSpinBox::down-button
+{
+subcontrol-position:left;
+	image: url(:/minus.svg);
+}
+	</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+           <property name="buttonSymbols">
+            <enum>QAbstractSpinBox::ButtonSymbols::UpDownArrows</enum>
+           </property>
+           <property name="prefix">
+            <string>До </string>
+           </property>
+           <property name="suffix">
+            <string> м</string>
+           </property>
+           <property name="minimum">
+            <double>-9999.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>9999.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Значения ГК для двойного разностного параметра</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pb_auto_gk">
+           <property name="minimumSize">
+            <size>
+             <width>70</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton {
+  border-radius: 8px;
+  outline: 0px;
+  background-color:rgb(213, 232, 255);
+  border: 1px solid rgb(0, 170, 255)
+}
+
+QPushButton:pressed {
+  background-color: rgb(240, 240, 240);
+  border: 2px solid rgb(0, 85, 255);
+ }
+QPushButton:hover {
+  background-color:rgba(213, 232, 255, 150);
+ }</string>
+           </property>
+           <property name="text">
+            <string>Авто </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="ds_gk_min">
+           <property name="styleSheet">
+            <string notr="true">QDoubleSpinBox
+{
+border : 2px solid rgb(0, 170, 255);
+background : white;
+border-radius: 8
+}
+QDoubleSpinBox::hover
+{
+border : 2px solid rgb(0, 170, 255);
+background : rgb(170, 255, 255);
+}
+QDoubleSpinBox::up-button
+{
+
+subcontrol-position:right;
+image: url(:/plus.svg);
+
+}
+QDoubleSpinBox::down-button
+{
+subcontrol-position:left;
+	image: url(:/minus.svg);
+}
+	</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+           <property name="buttonSymbols">
+            <enum>QAbstractSpinBox::ButtonSymbols::UpDownArrows</enum>
+           </property>
+           <property name="suffix">
+            <string> min</string>
+           </property>
+           <property name="minimum">
+            <double>-9999.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>9999.000000000000000</double>
+           </property>
+           <property name="stepType">
+            <enum>QAbstractSpinBox::StepType::DefaultStepType</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="ds_gk_max">
+           <property name="styleSheet">
+            <string notr="true">QDoubleSpinBox
+{
+border : 2px solid rgb(0, 170, 255);
+background : white;
+border-radius: 8
+}
+QDoubleSpinBox::hover
+{
+border : 2px solid rgb(0, 170, 255);
+background : rgb(170, 255, 255);
+}
+QDoubleSpinBox::up-button
+{
+
+subcontrol-position:right;
+image: url(:/plus.svg);
+
+}
+QDoubleSpinBox::down-button
+{
+subcontrol-position:left;
+	image: url(:/minus.svg);
+}
+	</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+           <property name="buttonSymbols">
+            <enum>QAbstractSpinBox::ButtonSymbols::UpDownArrows</enum>
+           </property>
+           <property name="prefix">
+            <string/>
+           </property>
+           <property name="suffix">
+            <string> max</string>
+           </property>
+           <property name="minimum">
+            <double>-9999.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>9999.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Расхождение кривых ЯМК в %</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="ds_diff_nml">
+           <property name="styleSheet">
+            <string notr="true">QDoubleSpinBox
+{
+border : 2px solid rgb(0, 170, 255);
+background : white;
+border-radius: 8
+}
+QDoubleSpinBox::hover
+{
+border : 2px solid rgb(0, 170, 255);
+background : rgb(170, 255, 255);
+}
+QDoubleSpinBox::up-button
+{
+
+subcontrol-position:right;
+image: url(:/plus.svg);
+
+}
+QDoubleSpinBox::down-button
+{
+subcontrol-position:left;
+	image: url(:/minus.svg);
+}
+	</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+           <property name="buttonSymbols">
+            <enum>QAbstractSpinBox::ButtonSymbols::UpDownArrows</enum>
+           </property>
+           <property name="prefix">
+            <string/>
+           </property>
+           <property name="suffix">
+            <string> %</string>
+           </property>
+           <property name="minimum">
+            <double>-9999.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>9999.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Коэф.пористости</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="ds_poro">
+           <property name="styleSheet">
+            <string notr="true">QDoubleSpinBox
+{
+border : 2px solid rgb(0, 170, 255);
+background : white;
+border-radius: 8
+}
+QDoubleSpinBox::hover
+{
+border : 2px solid rgb(0, 170, 255);
+background : rgb(170, 255, 255);
+}
+QDoubleSpinBox::up-button
+{
+
+subcontrol-position:right;
+image: url(:/plus.svg);
+
+}
+QDoubleSpinBox::down-button
+{
+subcontrol-position:left;
+	image: url(:/minus.svg);
+}
+	</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+           <property name="buttonSymbols">
+            <enum>QAbstractSpinBox::ButtonSymbols::UpDownArrows</enum>
+           </property>
+           <property name="suffix">
+            <string/>
+           </property>
+           <property name="minimum">
+            <double>-9999.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>9999.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>20</pointsize>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+  border-radius: 8px;
+  outline: 0px;
+  background-color:rgb(213, 232, 255);
+  border: 1px solid rgb(0, 170, 255);
+  font-size: 15px
+}
+
+QPushButton:pressed {
+  background-color: rgb(240, 240, 240);
+  border: 2px solid rgb(0, 85, 255);
+ }
+QPushButton:hover {
+  background-color:rgba(213, 232, 255, 150);
+ }
+</string>
+     </property>
+     <property name="inputMethodHints">
+      <set>Qt::InputMethodHint::ImhNone</set>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Apply|QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
+     </property>
+     <property name="centerButtons">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../IMAGE/icon.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Nml_param</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>227</x>
+     <y>265</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Nml_param</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>291</x>
+     <y>265</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

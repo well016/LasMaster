@@ -18,7 +18,7 @@ from Design.ui_nml_param import Ui_Nml_param
 import json
 import lasio
 
-from template import collector_list
+
 
 
 class LasMaster(QMainWindow):
@@ -28,7 +28,7 @@ class LasMaster(QMainWindow):
         self.curves = None
         self.file_name = None
         self.las = None
-        self.canvas = None
+
 
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
@@ -42,6 +42,7 @@ class LasMaster(QMainWindow):
         self.ui.pb_setting_meth.clicked.connect(self.setting_meth)
         self.ui.pb_build.clicked.connect(self.build_plot)
         self.ui.pb_excel.clicked.connect(self.save_excel)
+        self.ui.export_p.triggered.connect(self.save_excel)
 
 
 
