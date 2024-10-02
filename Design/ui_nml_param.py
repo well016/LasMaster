@@ -17,15 +17,15 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractButton, QAbstractSpinBox, QApplication, QDialog,
     QDialogButtonBox, QDoubleSpinBox, QGridLayout, QHBoxLayout,
-    QLabel, QPushButton, QSizePolicy, QVBoxLayout,
-    QWidget)
+    QLabel, QPushButton, QSizePolicy, QSpacerItem,
+    QVBoxLayout, QWidget)
 import IMAGE.icon_rc
 
 class Ui_Nml_param(object):
     def setupUi(self, Nml_param):
         if not Nml_param.objectName():
             Nml_param.setObjectName(u"Nml_param")
-        Nml_param.resize(385, 227)
+        Nml_param.resize(379, 305)
         icon = QIcon()
         icon.addFile(u":/programlogo.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         Nml_param.setWindowIcon(icon)
@@ -121,6 +121,7 @@ class Ui_Nml_param(object):
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.label_4 = QLabel(Nml_param)
         self.label_4.setObjectName(u"label_4")
+        self.label_4.setMinimumSize(QSize(163, 28))
         self.label_4.setWordWrap(True)
 
         self.verticalLayout_4.addWidget(self.label_4)
@@ -269,12 +270,13 @@ class Ui_Nml_param(object):
         self.label = QLabel(Nml_param)
         self.label.setObjectName(u"label")
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.label.setWordWrap(True)
 
         self.verticalLayout_3.addWidget(self.label)
 
-        self.ds_poro = QDoubleSpinBox(Nml_param)
-        self.ds_poro.setObjectName(u"ds_poro")
-        self.ds_poro.setStyleSheet(u"QDoubleSpinBox\n"
+        self.ds_a3 = QDoubleSpinBox(Nml_param)
+        self.ds_a3.setObjectName(u"ds_a3")
+        self.ds_a3.setStyleSheet(u"QDoubleSpinBox\n"
 "{\n"
 "border : 2px solid rgb(0, 170, 255);\n"
 "background : white;\n"
@@ -298,12 +300,43 @@ class Ui_Nml_param(object):
 "	image: url(:/minus.svg);\n"
 "}\n"
 "	")
-        self.ds_poro.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.ds_poro.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.UpDownArrows)
-        self.ds_poro.setMinimum(-9999.000000000000000)
-        self.ds_poro.setMaximum(9999.000000000000000)
+        self.ds_a3.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.ds_a3.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.UpDownArrows)
+        self.ds_a3.setMinimum(-9999.000000000000000)
+        self.ds_a3.setMaximum(9999.000000000000000)
 
-        self.verticalLayout_3.addWidget(self.ds_poro)
+        self.verticalLayout_3.addWidget(self.ds_a3)
+
+        self.ds_a4 = QDoubleSpinBox(Nml_param)
+        self.ds_a4.setObjectName(u"ds_a4")
+        self.ds_a4.setStyleSheet(u"QDoubleSpinBox\n"
+"{\n"
+"border : 2px solid rgb(0, 170, 255);\n"
+"background : white;\n"
+"border-radius: 8\n"
+"}\n"
+"QDoubleSpinBox::hover\n"
+"{\n"
+"border : 2px solid rgb(0, 170, 255);\n"
+"background : rgb(170, 255, 255);\n"
+"}\n"
+"QDoubleSpinBox::up-button\n"
+"{\n"
+"\n"
+"subcontrol-position:right;\n"
+"image: url(:/plus.svg);\n"
+"\n"
+"}\n"
+"QDoubleSpinBox::down-button\n"
+"{\n"
+"subcontrol-position:left;\n"
+"	image: url(:/minus.svg);\n"
+"}")
+        self.ds_a4.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.ds_a4.setMinimum(-99998.000000000000000)
+        self.ds_a4.setMaximum(99999.000000000000000)
+
+        self.verticalLayout_3.addWidget(self.ds_a4)
 
 
         self.horizontalLayout_2.addLayout(self.verticalLayout_3)
@@ -342,7 +375,52 @@ class Ui_Nml_param(object):
         self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Apply|QDialogButtonBox.StandardButton.Cancel|QDialogButtonBox.StandardButton.Ok)
         self.buttonBox.setCenterButtons(True)
 
-        self.gridLayout.addWidget(self.buttonBox, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.buttonBox, 3, 0, 1, 1)
+
+        self.verticalLayout_6 = QVBoxLayout()
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.label_5 = QLabel(Nml_param)
+        self.label_5.setObjectName(u"label_5")
+
+        self.verticalLayout_6.addWidget(self.label_5, 0, Qt.AlignmentFlag.AlignHCenter|Qt.AlignmentFlag.AlignTop)
+
+        self.ds_k = QDoubleSpinBox(Nml_param)
+        self.ds_k.setObjectName(u"ds_k")
+        self.ds_k.setMinimumSize(QSize(150, 22))
+        self.ds_k.setStyleSheet(u"QDoubleSpinBox\n"
+"{\n"
+"border : 2px solid rgb(0, 170, 255);\n"
+"background : white;\n"
+"border-radius: 8\n"
+"}\n"
+"QDoubleSpinBox::hover\n"
+"{\n"
+"border : 2px solid rgb(0, 170, 255);\n"
+"background : rgb(170, 255, 255);\n"
+"}\n"
+"QDoubleSpinBox::up-button\n"
+"{\n"
+"\n"
+"subcontrol-position:right;\n"
+"image: url(:/plus.svg);\n"
+"\n"
+"}\n"
+"QDoubleSpinBox::down-button\n"
+"{\n"
+"subcontrol-position:left;\n"
+"	image: url(:/minus.svg);\n"
+"}\n"
+"	")
+        self.ds_k.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.verticalLayout_6.addWidget(self.ds_k, 0, Qt.AlignmentFlag.AlignHCenter|Qt.AlignmentFlag.AlignTop)
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_6.addItem(self.verticalSpacer)
+
+
+        self.gridLayout.addLayout(self.verticalLayout_6, 2, 0, 1, 1)
 
 
         self.retranslateUi(Nml_param)
@@ -361,13 +439,16 @@ class Ui_Nml_param(object):
         self.ds_max.setSuffix(QCoreApplication.translate("Nml_param", u" \u043c", None))
         self.label_4.setText(QCoreApplication.translate("Nml_param", u"\u0417\u043d\u0430\u0447\u0435\u043d\u0438\u044f \u0413\u041a \u0434\u043b\u044f \u0434\u0432\u043e\u0439\u043d\u043e\u0433\u043e \u0440\u0430\u0437\u043d\u043e\u0441\u0442\u043d\u043e\u0433\u043e \u043f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u0430", None))
         self.pb_auto_gk.setText(QCoreApplication.translate("Nml_param", u"\u0410\u0432\u0442\u043e ", None))
-        self.ds_gk_min.setSuffix(QCoreApplication.translate("Nml_param", u" min", None))
+        self.ds_gk_min.setSuffix(QCoreApplication.translate("Nml_param", u" ur/h min ", None))
         self.ds_gk_max.setPrefix("")
-        self.ds_gk_max.setSuffix(QCoreApplication.translate("Nml_param", u" max", None))
+        self.ds_gk_max.setSuffix(QCoreApplication.translate("Nml_param", u" ur/h max", None))
         self.label_3.setText(QCoreApplication.translate("Nml_param", u"\u0420\u0430\u0441\u0445\u043e\u0436\u0434\u0435\u043d\u0438\u0435 \u043a\u0440\u0438\u0432\u044b\u0445 \u042f\u041c\u041a \u0432 %", None))
         self.ds_diff_nml.setPrefix("")
         self.ds_diff_nml.setSuffix(QCoreApplication.translate("Nml_param", u" %", None))
-        self.label.setText(QCoreApplication.translate("Nml_param", u"\u041a\u043e\u044d\u0444.\u043f\u043e\u0440\u0438\u0441\u0442\u043e\u0441\u0442\u0438", None))
-        self.ds_poro.setSuffix("")
+        self.label.setText(QCoreApplication.translate("Nml_param", u"\u041f\u0435\u0442\u0440\u043e\u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043a\u0438\u0435 \u043a\u043e\u044d\u0444\u0444\u0438\u0446\u0438\u0435\u043d\u0442\u044b", None))
+        self.ds_a3.setPrefix(QCoreApplication.translate("Nml_param", u"\u04303=", None))
+        self.ds_a3.setSuffix("")
+        self.ds_a4.setPrefix(QCoreApplication.translate("Nml_param", u"a4=", None))
+        self.label_5.setText(QCoreApplication.translate("Nml_param", u"\u0413\u0440\u0430\u043d\u0438\u0447\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u041a\u0433\u043b", None))
     # retranslateUi
 
