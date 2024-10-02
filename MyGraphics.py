@@ -62,7 +62,6 @@ def get_analysis_collector():
     ang = []
     for gk in GK:
         ag = round((gk - gk_min) / (gk_max - gk_min), 3)
-
         ang.append(ag)
 
     return collector_status
@@ -107,14 +106,26 @@ def plot_graph_smart():
     collector_status = get_analysis_collector()
     # Основной график для ax3
     step = 10
-
-    # Adjust the loop to iterate over the depth values with the given step
+    with open("settings.json", 'r') as f:
+        f = json.load(f)
+    n=-f["DEEP_MIN"]
+    m=-f["DEEP_MAX"]
     for i in range(0, len(DEPTH) - 1, step):
-        # Determine the color based on the collector status
+        # Определить цвет в зависимости от статуса коллектора
         color = 'green' if collector_status[i] == 'Collector' else 'black'
 
-        # Fill between the current and next step depth range
-        ax3.fill_betweenx([-DEPTH[i], -DEPTH[min(i + step, len(DEPTH) - 1)]], 0, 1, color=color)
+        # Получаем текущие и следующие значения глубины (при необходимости делаем их отрицательными)
+        текущая_глубина = -DEPTH[i]
+        следующая_глубина = -DEPTH[min(i + step, len(DEPTH) - 1)]
+
+        # Рассчитываем глубину с учетом 0.5 шага до и после текущей и следующей глубины
+        глубина_начало = текущая_глубина - 0.5 * step
+        глубина_конец = следующая_глубина + 0.5 * step
+
+        # Проверяем, попадает ли диапазон глубин между текущей и следующей в диапазон [m, n]
+        if глубина_начало >= m and глубина_конец <= n:
+            # Закрашиваем область между глубинами, включая корректировку на 0.5 шага
+            ax3.fill_betweenx([глубина_начало, глубина_конец], 0, 1, color=color)
 
     ax3.set_xlim(0, 1)
 
@@ -155,7 +166,7 @@ def plot_graph_smart():
     ax2.text(0.5, 1.035, f'NML3\n{min((filter(lambda x: not math.isnan(x), NML3)))} - '
                          f'{max((filter(lambda x: not math.isnan(x), NML3)))}', ha='center', fontsize=8, color='aqua',
              transform=ax2.transAxes)
-    ax3.set_title(f'\nСтатус\nколлектора', fontsize=8, color='tab:green')
+    ax3.set_title(f'\nСтатус\nколлектора', fontsize=8, color='green')
 
     fig.subplots_adjust(wspace=0)
     y_ticks = np.arange(min(filter(lambda x: x % 10 == 0, -DEPTH)), max(filter(lambda x: x % 10 == 0, -DEPTH)) + 30, 10)
@@ -171,7 +182,7 @@ def plot_graph_smart():
     ax3.xaxis.set_ticklabels([])
 
     ax4.yaxis.set_ticklabels([])
-
+    # Добавил шкалу по х с параметрами
     ax4.xaxis.set_ticks_position('top')
     ax4.tick_params(axis='x', labelsize=7)
 
