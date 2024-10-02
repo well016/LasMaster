@@ -23,7 +23,10 @@ def data_reading():
     NML3 = NML_las['NML3']
     DEPTH_GK = GK_las['DEPT']
     DEPTH_NML = NML_las['DEPT']
-    DS = NML_las['DS']
+    try:
+        DS = NML_las['DS']
+    except:
+        DS = NML_las['DS:1']
 
     # Общая глубина - объединение глубин GK и NML
     common_depth = np.union1d(DEPTH_GK, DEPTH_NML)
@@ -45,6 +48,9 @@ def get_analysis_collector():
     gk_min = f["GK_MIN"]
     gk_max = f["GK_MAX"]
     diff_nml = f["DIFF_NML"]
+    a3=f['a3']
+    a4=f['a4']
+    kgl=f['Kgl']
     diff_1_2 = []
     diff_2_3 = []
     for nml1, nml2 in zip(NML1, NML2):
@@ -53,16 +59,22 @@ def get_analysis_collector():
     for nml2, nml3 in zip(NML2, NML3):
         diff = round((abs(nml2 - nml3) / (nml2)) * 100, 2)
         diff_2_3.append(diff)
-    collector_status = []
-    for i, j in zip(diff_1_2, diff_2_3):
-        if i >= diff_nml and j >= diff_nml:
-            collector_status.append('Collector')
-        else:
-            collector_status.append('Not Collector')
     ang = []
+    lkgl = []
     for gk in GK:
         ag = round((gk - gk_min) / (gk_max - gk_min), 3)
         ang.append(ag)
+    for i in ang:
+        d = a3 * i ** a4
+        lkgl.append(d)
+    collector_status = []
+    for i, j, k in zip(diff_1_2, diff_2_3,lkgl):
+        if i >= diff_nml and j >= diff_nml and k<kgl:
+            collector_status.append('Collector')
+        else:
+            collector_status.append('Not Collector')
+
+
 
     return collector_status
 
@@ -105,7 +117,7 @@ def plot_graph_smart():
 
     collector_status = get_analysis_collector()
     # Основной график для ax3
-    step = 10
+    step = 1
     with open("settings.json", 'r') as f:
         f = json.load(f)
     n=-f["DEEP_MIN"]
