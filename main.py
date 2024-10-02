@@ -17,7 +17,7 @@ from Design.ui_nml_param import Ui_Nml_param
 
 import json
 import lasio
-
+import math
 
 
 
@@ -79,18 +79,12 @@ class LasMaster(QMainWindow):
         # Авто подсчет максимального и минимального ГК
         def auto_gk():
             self.nml_param.ui.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.save_param)
-            with open("settings.json", 'r') as f:
-                f = json.load(f)
-            GK_las = lasio.read(f["GK"])
-            GK = GK_las['GK']
-            DEPTH = GK_las['DEPT']
-            min_length = min(len(GK), len(DEPTH))
-            DEPTH = DEPTH[:min_length]
-            GK = GK[:min_length]
+            GK, NML1, NML2, NML3, DEPTH, DS = MyGraphics.data_reading()
             gk=[]
             for i, j in zip(GK, DEPTH):
                 if j >= self.nml_param.ui.ds_min.value() and j <= self.nml_param.ui.ds_max.value():
-                    gk.append(i)
+                    if not math.isnan(i):
+                        gk.append(i)
             self.nml_param.ui.ds_gk_min.setValue(min(gk))
             self.nml_param.ui.ds_gk_max.setValue(max(gk))
 
@@ -120,7 +114,10 @@ class LasMaster(QMainWindow):
             "DEEP_MAX": self.nml_param.ui.ds_max.value(),
             "GK_MIN": self.nml_param.ui.ds_gk_min.value(),
             "GK_MAX": self.nml_param.ui.ds_gk_max.value(),
-            "DIFF_NML": self.nml_param.ui.ds_diff_nml.value()
+            "DIFF_NML": self.nml_param.ui.ds_diff_nml.value(),
+            "a3":self.nml_param.ui.ds_a3.value(),
+            "a4":self.nml_param.ui.ds_a4.value(),
+            "Kgl":self.nml_param.ui.ds_k.value(),
         })
 
         # Сохраняем обновленные параметры обратно в JSON файл
@@ -140,6 +137,11 @@ class LasMaster(QMainWindow):
             self.nml_param.ui.ds_gk_min.setValue(params.get("GK_MIN", 0))
             self.nml_param.ui.ds_gk_max.setValue(params.get("GK_MAX", 100))
             self.nml_param.ui.ds_diff_nml.setValue(params.get("DIFF_NML", 0))
+            self.nml_param.ui.ds_a3.setValue(params.get("a3",0))
+            self.nml_param.ui.ds_a4.setValue(params.get("a4",0))
+            self.nml_param.ui.ds_k.setValue(params.get("Kgl", 0))
+
+
 
 
         except FileNotFoundError:
@@ -174,7 +176,7 @@ class LasMaster(QMainWindow):
     def collector_status_table(self):
         # Two separate lists
         collector_status = MyGraphics.get_analysis_collector()
-        GK, NML1, NML2, NML3, DEPTH = MyGraphics.data_reading()
+        GK, NML1, NML2, NML3, DEPTH, DS = MyGraphics.data_reading()
         depths = DEPTH
         statuses = collector_status  # Example statuses
 
@@ -211,7 +213,7 @@ class LasMaster(QMainWindow):
 
     def save_excel(self):
         collector_status=MyGraphics.get_analysis_collector()
-        GK, NML1, NML2, NML3, DEPTH= MyGraphics.data_reading()
+        GK, NML1, NML2, NML3, DEPTH,DS= MyGraphics.data_reading()
         data = {
             "Глубина,м": DEPTH,
             "Статус Коллектора": collector_status
