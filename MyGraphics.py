@@ -139,7 +139,7 @@ def plot_graph_smart():
     wrap_lines(NML3, DEPTH, user_min_x, user_max_x, ax2, color='aqua', linestyle=':')
 
     # Название графиков
-    ax1.set_title(f'GK\n{min((filter(lambda x: not math.isnan(x), GK)))}-{max(filter(lambda x: not math.isnan(x), GK))}', fontsize=8, color='tab:red')
+    ax1.set_title(f'GK,ur/h\n{min((filter(lambda x: not math.isnan(x), GK)))}-{max(filter(lambda x: not math.isnan(x), GK))}', fontsize=8, color='tab:red')
     ax2.text(0.5, 1.09, f'NML1\n{min((filter(lambda x: not math.isnan(x), NML1)))} - {max((filter(lambda x: not math.isnan(x), NML1)))}', ha='center', fontsize=8, color='red',
              transform=ax2.transAxes)
     ax2.text(0.5, 1.05, f'NML2\n{min((filter(lambda x: not math.isnan(x), NML2)))} - {max((filter(lambda x: not math.isnan(x), NML2)))}', ha='center', fontsize=8, color='blue',
