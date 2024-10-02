@@ -6,6 +6,7 @@ import lasio
 from matplotlib.ticker import MaxNLocator
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication
+import math
 
 # Set the backend to Qt for compatibility with PySide6
 mpl.use('QtAgg')
@@ -20,14 +21,24 @@ def data_reading():
     NML1 = NML_las['NML1']
     NML2 = NML_las['NML2']
     NML3 = NML_las['NML3']
-    DEPTH = GK_las['DEPT']
-    min_length = min(len(NML1), len(NML2), len(NML3), len(GK), len(DEPTH))
-    NML1 = NML1[:min_length]
-    NML2 = NML2[:min_length]
-    NML3 = NML3[:min_length]
-    DEPTH = DEPTH[:min_length]
-    GK = GK[:min_length]
-    return GK, NML1, NML2, NML3, DEPTH
+    DEPTH_GK = GK_las['DEPT']
+    DEPTH_NML = NML_las['DEPT']
+
+    # Общая глубина - объединение глубин GK и NML
+    common_depth = np.union1d(DEPTH_GK, DEPTH_NML)
+
+    # Интерполяция данных по общим глубинам
+    GK_interp = np.interp(common_depth, DEPTH_GK, GK)
+    NML1_interp = np.interp(common_depth, DEPTH_NML, NML1)
+    NML2_interp = np.interp(common_depth, DEPTH_NML, NML2)
+    NML3_interp = np.interp(common_depth, DEPTH_NML, NML3)
+
+
+
+
+
+
+    return GK_interp, NML1_interp, NML2_interp, NML3_interp, common_depth
 
 
 def get_analysis_collector():
@@ -68,9 +79,9 @@ def plot_graph_smart():
 
     # Пользовательские границы для осей X (минимальные и максимальные значения для растяжения)
     user_min_gk = -1  # Минимальное значение для оси X графика GK
-    user_max_gk = 30  # Максимальное значение для оси X графика GK
+    user_max_gk = 10  # Максимальное значение для оси X графика GK
     user_min_x = -1  # Минимальное значение для оси X графика NML
-    user_max_x = 200  # Максимальное значение для оси X графика NML
+    user_max_x = 100  # Максимальное значение для оси X графика NML
 
     # Устанавливаем начальные пределы осей X на основе пользовательских значений
     ax1.set_xlim(user_min_gk, user_max_gk)
@@ -128,12 +139,12 @@ def plot_graph_smart():
     wrap_lines(NML3, DEPTH, user_min_x, user_max_x, ax2, color='aqua', linestyle=':')
 
     # Название графиков
-    ax1.set_title(f'GK\n{min(GK)}-{max(GK)}', fontsize=8, color='tab:red')
-    ax2.text(0.5, 1.09, f'NML1\n{min(NML1)} - {max(NML1)}', ha='center', fontsize=8, color='red',
+    ax1.set_title(f'GK\n{min((filter(lambda x: not math.isnan(x), GK)))}-{max(filter(lambda x: not math.isnan(x), GK))}', fontsize=8, color='tab:red')
+    ax2.text(0.5, 1.09, f'NML1\n{min((filter(lambda x: not math.isnan(x), NML1)))} - {max((filter(lambda x: not math.isnan(x), NML1)))}', ha='center', fontsize=8, color='red',
              transform=ax2.transAxes)
-    ax2.text(0.5, 1.05, f'NML2\n{min(NML2)} - {max(NML2)}', ha='center', fontsize=8, color='blue',
+    ax2.text(0.5, 1.05, f'NML2\n{min((filter(lambda x: not math.isnan(x), NML2)))} - {max((filter(lambda x: not math.isnan(x), NML2)))}', ha='center', fontsize=8, color='blue',
              transform=ax2.transAxes)
-    ax2.text(0.5, 1.005, f'NML3\n{min(NML3)} - {max(NML3)}', ha='center', fontsize=8, color='aqua',
+    ax2.text(0.5, 1.005, f'NML3\n{min((filter(lambda x: not math.isnan(x), NML3)))} - {max((filter(lambda x: not math.isnan(x), NML3)))}', ha='center', fontsize=8, color='aqua',
              transform=ax2.transAxes)
     ax3.set_title(f'\nСтатус\nколлектора', fontsize=8, color='tab:green')
 
