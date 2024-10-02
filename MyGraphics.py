@@ -74,9 +74,9 @@ def plot_graph_smart():
                                              gridspec_kw={'width_ratios': [1, 0.4, 1, 0.2]})
 
     # Пользовательские границы для осей X (минимальные и максимальные значения для растяжения)
-    user_min_gk = -1  # Минимальное значение для оси X графика GK
-    user_max_gk = 10  # Максимальное значение для оси X графика GK
-    user_min_x = -1  # Минимальное значение для оси X графика NML
+    user_min_gk = 0  # Минимальное значение для оси X графика GK
+    user_max_gk = 20  # Максимальное значение для оси X графика GK
+    user_min_x = 0  # Минимальное значение для оси X графика NML
     user_max_x = 100  # Максимальное значение для оси X графика NML
     user_min_ds= 200
     user_max_ds = 300
@@ -146,13 +146,13 @@ def plot_graph_smart():
                   f'{max(filter(lambda x: not math.isnan(x), GK))}', fontsize=8, color='red')
     ax4.set_title(f'DS, мм\n{round(min((filter(lambda x: not math.isnan(x), DS))), 1)} - '
                   f'{round(max((filter(lambda x: not math.isnan(x), DS))), 1)}', fontsize=8, color='green')
-    ax2.text(0.5, 1.09, f'NML1\n{min((filter(lambda x: not math.isnan(x), NML1)))} - '
+    ax2.text(0.5, 1.095, f'NML1\n{min((filter(lambda x: not math.isnan(x), NML1)))} - '
                         f'{max((filter(lambda x: not math.isnan(x), NML1)))}', ha='center', fontsize=8, color='red',
              transform=ax2.transAxes)
-    ax2.text(0.5, 1.05, f'NML2\n{min((filter(lambda x: not math.isnan(x), NML2)))} - '
+    ax2.text(0.5, 1.065, f'NML2\n{min((filter(lambda x: not math.isnan(x), NML2)))} - '
                         f'{max((filter(lambda x: not math.isnan(x), NML2)))}', ha='center', fontsize=8, color='blue',
              transform=ax2.transAxes)
-    ax2.text(0.5, 1.005, f'NML3\n{min((filter(lambda x: not math.isnan(x), NML3)))} - '
+    ax2.text(0.5, 1.035, f'NML3\n{min((filter(lambda x: not math.isnan(x), NML3)))} - '
                          f'{max((filter(lambda x: not math.isnan(x), NML3)))}', ha='center', fontsize=8, color='aqua',
              transform=ax2.transAxes)
     ax3.set_title(f'\nСтатус\nколлектора', fontsize=8, color='tab:green')
@@ -160,18 +160,32 @@ def plot_graph_smart():
     fig.subplots_adjust(wspace=0)
     y_ticks = np.arange(min(filter(lambda x: x % 10 == 0, -DEPTH)), max(filter(lambda x: x % 10 == 0, -DEPTH)) + 30, 10)
 
-    for ax in [ax1, ax2, ax3]:
+    for ax in [ax1, ax2, ax3,ax4]:
         ax.set_yticks(y_ticks)
         ax.set_ylim(min(-DEPTH), max(-DEPTH))
         ax.yaxis.set_major_locator(MaxNLocator(integer=True))  # Ensure only integer ticks
     # Убираем шкалу по х и y
-    ax1.xaxis.set_ticklabels([])
+
     ax2.yaxis.set_ticklabels([])
-    ax2.xaxis.set_ticklabels([])
     ax3.yaxis.set_ticklabels([])
     ax3.xaxis.set_ticklabels([])
-    ax4.xaxis.set_ticklabels([])
+
     ax4.yaxis.set_ticklabels([])
+
+    ax4.xaxis.set_ticks_position('top')
+    ax4.tick_params(axis='x', labelsize=7)
+
+    ax2.xaxis.set_ticks_position('top')
+    ax4.tick_params(axis='x', labelsize=7)
+
+    ax1.xaxis.set_ticks_position('top')
+    ax4.tick_params(axis='x', labelsize=7)
+
+    ax1.xaxis.set_major_locator(MaxNLocator(integer=True, prune='both',nbins=4))
+    ax2.xaxis.set_major_locator(MaxNLocator(integer=True, prune='both',nbins=4))
+    ax4.xaxis.set_major_locator(MaxNLocator(integer=True, prune='both',nbins=4))
+
+
 
 
     for ax in [ax1, ax2,ax4]:
@@ -186,6 +200,7 @@ def plot_graph_smart():
     ax4.grid(True, axis='y', linestyle='--', color='gray')
     ax4.xaxis.set_ticks_position('none')
     ax4.yaxis.set_ticks_position('none')
+
 
 
 
@@ -235,7 +250,8 @@ def plot_graph_smart():
                 ax.set_ylim(new_ylim)
                 ax.set_yticks(np.arange(new_ylim[0], new_ylim[1], current_grid_interval))
                 ax.grid(True, which='both', linestyle='--', color='gray')
-                ax.yaxis.set_major_locator(MaxNLocator(integer=True))  # Ensure only integer ticks
+                ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+                # Ensure only integer ticks
         else:
             cur_ylim = ax1.get_ylim()
             delta_y = (cur_ylim[1] - cur_ylim[0]) * 0.1
