@@ -23,6 +23,7 @@ def data_reading():
     NML3 = NML_las['NML3']
     DEPTH_GK = GK_las['DEPT']
     DEPTH_NML = NML_las['DEPT']
+    DS = NML_las['DS']
 
     # Общая глубина - объединение глубин GK и NML
     common_depth = np.union1d(DEPTH_GK, DEPTH_NML)
@@ -32,17 +33,13 @@ def data_reading():
     NML1_interp = np.interp(common_depth, DEPTH_NML, NML1)
     NML2_interp = np.interp(common_depth, DEPTH_NML, NML2)
     NML3_interp = np.interp(common_depth, DEPTH_NML, NML3)
+    DS_interp = np.interp(common_depth, DEPTH_NML, DS)
 
-
-
-
-
-
-    return GK_interp, NML1_interp, NML2_interp, NML3_interp, common_depth
+    return GK_interp, NML1_interp, NML2_interp, NML3_interp, common_depth, DS_interp
 
 
 def get_analysis_collector():
-    GK, NML1, NML2, NML3, DEPTH = data_reading()
+    GK, NML1, NML2, NML3, DEPTH, DS = data_reading()
     with open("settings.json", 'r') as f:
         f = json.load(f)
     gk_min = f["GK_MIN"]
@@ -62,34 +59,40 @@ def get_analysis_collector():
             collector_status.append('Collector')
         else:
             collector_status.append('Not Collector')
-    ang=[]
+    ang = []
     for gk in GK:
-        ag=round((gk-gk_min)/(gk_max-gk_min),3)
+        ag = round((gk - gk_min) / (gk_max - gk_min), 3)
 
         ang.append(ag)
 
     return collector_status
 
 
-
 def plot_graph_smart():
-    GK, NML1, NML2, NML3, DEPTH = data_reading()
-    fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, figsize=(8, 15), dpi=100, facecolor='white',
-                                        gridspec_kw={'width_ratios': [1, 1, 0.2]})
+    GK, NML1, NML2, NML3, DEPTH, DS = data_reading()
+    fig, (ax1, ax4, ax2, ax3) = plt.subplots(nrows=1, ncols=4, figsize=(8, 15), dpi=100, facecolor='white',
+                                             gridspec_kw={'width_ratios': [1, 0.4, 1, 0.2]})
 
     # Пользовательские границы для осей X (минимальные и максимальные значения для растяжения)
     user_min_gk = -1  # Минимальное значение для оси X графика GK
     user_max_gk = 10  # Максимальное значение для оси X графика GK
     user_min_x = -1  # Минимальное значение для оси X графика NML
     user_max_x = 100  # Максимальное значение для оси X графика NML
+    user_min_ds= 200
+    user_max_ds = 300
 
     # Устанавливаем начальные пределы осей X на основе пользовательских значений
     ax1.set_xlim(user_min_gk, user_max_gk)
     ax2.set_xlim(user_min_x, user_max_x)
+    ax4.set_xlim(user_min_ds, user_max_ds)
 
     # Основной график для ax1
+
     mask_inside_GK = (GK >= user_min_gk) & (GK <= user_max_gk)
     ax1.plot(np.ma.masked_where(~mask_inside_GK, GK), -DEPTH, color='red')
+
+    mask_inside_DS = (DS >= user_min_ds) & (GK <= user_max_ds)
+    ax4.plot(np.ma.masked_where(~mask_inside_DS, DS), -DEPTH, color='green')
 
     # Основной график для ax2
     mask_inside_NML1 = (NML1 >= user_min_x) & (NML1 <= user_max_x)
@@ -100,7 +103,6 @@ def plot_graph_smart():
 
     mask_inside_NML3 = (NML3 >= user_min_x) & (NML3 <= user_max_x)
     ax2.plot(np.ma.masked_where(~mask_inside_NML3, NML3), -DEPTH, color='aqua')
-
 
     collector_status = get_analysis_collector()
     # Основной график для ax3
@@ -116,7 +118,6 @@ def plot_graph_smart():
 
     ax3.set_xlim(0, 1)
 
-
     # Переносим линии справа налево как пунктирные линии несколько раз, если они выходят за пределы
     def wrap_lines(values, depth, limit_min, limit_max, ax, color, linestyle):
         shift = (limit_max - limit_min)
@@ -129,6 +130,8 @@ def plot_graph_smart():
     # Для графика GK
     wrap_lines(GK, DEPTH, user_min_gk, user_max_gk, ax1, color='red', linestyle=':')
 
+    wrap_lines(DS, DEPTH, user_min_ds, user_max_ds, ax4, color='green', linestyle=':')
+
     # Для графика NML1
     wrap_lines(NML1, DEPTH, user_min_x, user_max_x, ax2, color='red', linestyle=':')
 
@@ -139,12 +142,18 @@ def plot_graph_smart():
     wrap_lines(NML3, DEPTH, user_min_x, user_max_x, ax2, color='aqua', linestyle=':')
 
     # Название графиков
-    ax1.set_title(f'GK,ur/h\n{min((filter(lambda x: not math.isnan(x), GK)))}-{max(filter(lambda x: not math.isnan(x), GK))}', fontsize=8, color='tab:red')
-    ax2.text(0.5, 1.09, f'NML1\n{min((filter(lambda x: not math.isnan(x), NML1)))} - {max((filter(lambda x: not math.isnan(x), NML1)))}', ha='center', fontsize=8, color='red',
+    ax1.set_title(f'GK, ur/h\n{min((filter(lambda x: not math.isnan(x), GK)))}-'
+                  f'{max(filter(lambda x: not math.isnan(x), GK))}', fontsize=8, color='red')
+    ax4.set_title(f'DS, мм\n{round(min((filter(lambda x: not math.isnan(x), DS))), 1)} - '
+                  f'{round(max((filter(lambda x: not math.isnan(x), DS))), 1)}', fontsize=8, color='green')
+    ax2.text(0.5, 1.09, f'NML1\n{min((filter(lambda x: not math.isnan(x), NML1)))} - '
+                        f'{max((filter(lambda x: not math.isnan(x), NML1)))}', ha='center', fontsize=8, color='red',
              transform=ax2.transAxes)
-    ax2.text(0.5, 1.05, f'NML2\n{min((filter(lambda x: not math.isnan(x), NML2)))} - {max((filter(lambda x: not math.isnan(x), NML2)))}', ha='center', fontsize=8, color='blue',
+    ax2.text(0.5, 1.05, f'NML2\n{min((filter(lambda x: not math.isnan(x), NML2)))} - '
+                        f'{max((filter(lambda x: not math.isnan(x), NML2)))}', ha='center', fontsize=8, color='blue',
              transform=ax2.transAxes)
-    ax2.text(0.5, 1.005, f'NML3\n{min((filter(lambda x: not math.isnan(x), NML3)))} - {max((filter(lambda x: not math.isnan(x), NML3)))}', ha='center', fontsize=8, color='aqua',
+    ax2.text(0.5, 1.005, f'NML3\n{min((filter(lambda x: not math.isnan(x), NML3)))} - '
+                         f'{max((filter(lambda x: not math.isnan(x), NML3)))}', ha='center', fontsize=8, color='aqua',
              transform=ax2.transAxes)
     ax3.set_title(f'\nСтатус\nколлектора', fontsize=8, color='tab:green')
 
@@ -155,14 +164,17 @@ def plot_graph_smart():
         ax.set_yticks(y_ticks)
         ax.set_ylim(min(-DEPTH), max(-DEPTH))
         ax.yaxis.set_major_locator(MaxNLocator(integer=True))  # Ensure only integer ticks
-
+    # Убираем шкалу по х и y
     ax1.xaxis.set_ticklabels([])
     ax2.yaxis.set_ticklabels([])
     ax2.xaxis.set_ticklabels([])
     ax3.yaxis.set_ticklabels([])
     ax3.xaxis.set_ticklabels([])
+    ax4.xaxis.set_ticklabels([])
+    ax4.yaxis.set_ticklabels([])
 
-    for ax in [ax1, ax2]:
+
+    for ax in [ax1, ax2,ax4]:
         ax.grid(True, which='both', linestyle='--', color='gray')
         ax.yaxis.set_ticks_position('none')
         ax.xaxis.set_ticks_position('none')
@@ -170,6 +182,12 @@ def plot_graph_smart():
     ax3.grid(True, axis='y', linestyle='--', color='gray')
     ax3.xaxis.set_ticks_position('none')
     ax3.yaxis.set_ticks_position('none')
+
+    ax4.grid(True, axis='y', linestyle='--', color='gray')
+    ax4.xaxis.set_ticks_position('none')
+    ax4.yaxis.set_ticks_position('none')
+
+
 
     current_grid_interval = 10  # Initial grid interval
 
@@ -213,7 +231,7 @@ def plot_graph_smart():
             # Updating grid intervals and limits
             current_grid_interval = clamp(round(current_grid_interval), 0.1, 10)
 
-            for ax in [ax1, ax2, ax3]:
+            for ax in [ax1, ax4, ax2, ax3]:
                 ax.set_ylim(new_ylim)
                 ax.set_yticks(np.arange(new_ylim[0], new_ylim[1], current_grid_interval))
                 ax.grid(True, which='both', linestyle='--', color='gray')
@@ -229,7 +247,7 @@ def plot_graph_smart():
             else:
                 return
 
-            for ax in [ax1, ax2, ax3]:
+            for ax in [ax1, ax4, ax2, ax3]:
                 ax.set_ylim(new_ylim)
                 ax.yaxis.set_major_locator(MaxNLocator(integer=True))
         fig.canvas.draw_idle()
