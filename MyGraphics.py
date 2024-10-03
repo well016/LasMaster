@@ -99,25 +99,21 @@ def plot_graph_smart():
 
     # Основной график для ax1
 
-    mask_inside_GK = (GK >= user_min_gk) & (GK <= user_max_gk)
-    ax1.plot(np.ma.masked_where(~mask_inside_GK, GK), -DEPTH, color='red')
 
-    mask_inside_DS = (DS >= user_min_ds) & (GK <= user_max_ds)
-    ax4.plot(np.ma.masked_where(~mask_inside_DS, DS), -DEPTH, color='green')
+    ax1.plot(GK, -DEPTH, color='red')
+
+
+    # Основной график для ax4
+    ax4.plot(DS, -DEPTH, color='green')
 
     # Основной график для ax2
-    mask_inside_NML1 = (NML1 >= user_min_x) & (NML1 <= user_max_x)
-    ax2.plot(np.ma.masked_where(~mask_inside_NML1, NML1), -DEPTH, color='red')
-
-    mask_inside_NML2 = (NML2 >= user_min_x) & (NML2 <= user_max_x)
-    ax2.plot(np.ma.masked_where(~mask_inside_NML2, NML2), -DEPTH, color='blue')
-
-    mask_inside_NML3 = (NML3 >= user_min_x) & (NML3 <= user_max_x)
-    ax2.plot(np.ma.masked_where(~mask_inside_NML3, NML3), -DEPTH, color='aqua')
+    ax2.plot(NML1, -DEPTH, color='red')
+    ax2.plot(NML2, -DEPTH, color='blue')
+    ax2.plot(NML3, -DEPTH, color='aqua')
 
     collector_status = get_analysis_collector()
     # Основной график для ax3
-    step = 10
+    step = 1
     with open("settings.json", 'r') as f:
         f = json.load(f)
     n=-f["DEEP_MIN"]
@@ -147,8 +143,8 @@ def plot_graph_smart():
     def wrap_lines(values, depth, limit_min, limit_max, ax, color, linestyle):
         shift = (limit_max - limit_min)
         while np.any(values > limit_max):
-            excess_values = values > limit_max
-            wrapped_values = np.where(excess_values, values - shift, np.nan)
+            excess_values = values >= limit_max
+            wrapped_values = np.where(excess_values, values - shift, limit_min-1)
             ax.plot(wrapped_values, -depth, color=color, linestyle=linestyle, linewidth=0.8)
             values = wrapped_values  # обновляем значения для дальнейшего переноса
 
