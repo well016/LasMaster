@@ -117,29 +117,31 @@ def plot_graph_smart():
 
     collector_status = get_analysis_collector()
     # Основной график для ax3
-    step = 1
+    step = 10
     with open("settings.json", 'r') as f:
         f = json.load(f)
     n=-f["DEEP_MIN"]
     m=-f["DEEP_MAX"]
-    for i in range(0, len(DEPTH) - 1, step):
-        # Определить цвет в зависимости от статуса коллектора
+    DEPTH = np.array(DEPTH)
+    collector_status = np.array(collector_status)
+
+    len_depth = len(DEPTH) - 1
+    half_step = 0.5 * step
+
+    # Предварительный расчет глубин с учетом шага
+    глубина_начало = -DEPTH[:-step] - half_step
+    глубина_конец = -DEPTH[step:] + half_step
+
+    # Маска для проверки, попадает ли в диапазон [m, n]
+    mask = (глубина_начало >= m) & (глубина_конец <= n)
+
+    # Проходим только по отфильтрованным значениям
+    for i in np.where(mask)[0]:
         color = 'green' if collector_status[i] == 'Collector' else 'black'
-
-        # Получаем текущие и следующие значения глубины (при необходимости делаем их отрицательными)
-        текущая_глубина = -DEPTH[i]
-        следующая_глубина = -DEPTH[min(i + step, len(DEPTH) - 1)]
-
-        # Рассчитываем глубину с учетом 0.5 шага до и после текущей и следующей глубины
-        глубина_начало = текущая_глубина - 0.5 * step
-        глубина_конец = следующая_глубина + 0.5 * step
-
-        # Проверяем, попадает ли диапазон глубин между текущей и следующей в диапазон [m, n]
-        if глубина_начало >= m and глубина_конец <= n:
-            # Закрашиваем область между глубинами, включая корректировку на 0.5 шага
-            ax3.fill_betweenx([глубина_начало, глубина_конец], 0, 1, color=color)
+        ax3.fill_betweenx([глубина_начало[i], глубина_конец[i]], 0, 1, color=color)
 
     ax3.set_xlim(0, 1)
+
 
     # Переносим линии справа налево как пунктирные линии несколько раз, если они выходят за пределы
     def wrap_lines(values, depth, limit_min, limit_max, ax, color, linestyle):
