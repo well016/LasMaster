@@ -7,6 +7,7 @@ from matplotlib.ticker import MaxNLocator
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication
 import math
+import matplotlib.collections as mc
 
 # Set the backend to Qt for compatibility with PySide6
 mpl.use('QtAgg')
@@ -89,8 +90,8 @@ def plot_graph_smart():
     user_max_gk = 20  # Максимальное значение для оси X графика GK
     user_min_x = 0  # Минимальное значение для оси X графика NML
     user_max_x = 100  # Максимальное значение для оси X графика NML
-    user_min_ds= 200
-    user_max_ds = 300
+    user_min_ds= 200 # Минимальное значение для оси X графика DS
+    user_max_ds = 300 # Максимальное значение для оси X графика DS
 
     # Устанавливаем начальные пределы осей X на основе пользовательских значений
     ax1.set_xlim(user_min_gk, user_max_gk)
@@ -112,31 +113,34 @@ def plot_graph_smart():
     ax2.plot(NML3, -DEPTH, color='aqua')
 
     collector_status = get_analysis_collector()
-    # Основной график для ax3
-    step = 1
-    with open("settings.json", 'r') as f:
-        f = json.load(f)
-    n=-f["DEEP_MIN"]
-    m=-f["DEEP_MAX"]
-    DEPTH = np.array(DEPTH)
+
+    with open("settings.json", 'r') as file:
+        settings = json.load(file)
+
+    depth_min = -settings["DEEP_MIN"]
+    depth_max = -settings["DEEP_MAX"]
+    depth_values = np.array(DEPTH)
     collector_status = np.array(collector_status)
 
-    len_depth = len(DEPTH) - 1
-    half_step = 0.5 * step
+    depth_start = -depth_values[:-1]
+    depth_end = -depth_values[1:]
 
-    # Предварительный расчет глубин с учетом шага
-    глубина_начало = -DEPTH[:-step] - half_step
-    глубина_конец = -DEPTH[step:] + half_step
+    mask = (depth_start >= depth_max) & (depth_end <= depth_min)
+    filtered_indices = np.where(mask)[0]
+    filtered_depth_start = depth_start[filtered_indices]
+    filtered_depth_end = depth_end[filtered_indices]
+    filtered_collector_status = collector_status[filtered_indices]
 
-    # Маска для проверки, попадает ли в диапазон [m, n]
-    mask = (глубина_начало >= m) & (глубина_конец <= n)
+    segments = []
+    colors = []
+    for start, end, status in zip(filtered_depth_start, filtered_depth_end, filtered_collector_status):
+        segments.append([(0, start), (1, start), (1, end), (0, end)])
+        colors.append('green' if status == 'Collector' else 'black')
 
-    # Проходим только по отфильтрованным значениям
-    for i in np.where(mask)[0]:
-        color = 'green' if collector_status[i] == 'Collector' else 'black'
-        ax3.fill_betweenx([глубина_начало[i], глубина_конец[i]], 0, 1, color=color)
-
+    poly_collection = mc.PolyCollection(segments, facecolors=colors, edgecolors='none')
+    ax3.add_collection(poly_collection)
     ax3.set_xlim(0, 1)
+    ax3.autoscale_view()
 
 
     # Переносим линии справа налево как пунктирные линии несколько раз, если они выходят за пределы
@@ -144,7 +148,7 @@ def plot_graph_smart():
         shift = (limit_max - limit_min)
         while np.any(values > limit_max):
             excess_values = values >= limit_max
-            wrapped_values = np.where(excess_values, values - shift, limit_min-1)
+            wrapped_values = np.where(excess_values, values - shift, limit_min-0.1)
             ax.plot(wrapped_values, -depth, color=color, linestyle=linestyle, linewidth=0.8)
             values = wrapped_values  # обновляем значения для дальнейшего переноса
 
