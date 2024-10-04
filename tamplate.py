@@ -15,12 +15,16 @@ DS_interp = np.random.normal(size=100)    # Пример данных для к�
 app = QtWidgets.QApplication([])
 
 # Основное окно
-win = pg.GraphicsLayoutWidget(show=True, title="Лог-кривые")
-win.resize(800, 600)
+win = QtWidgets.QMainWindow()
+central_widget = QtWidgets.QWidget()
+win.setCentralWidget(central_widget)
+layout = QtWidgets.QHBoxLayout(central_widget)
 win.setWindowTitle('Каротажные кривые')
+win.resize(1000, 600)
 
 # Устанавливаем белый фон для всего окна
-win.setBackground('white')
+pg.setConfigOption('background', 'w')
+pg.setConfigOption('foreground', 'k')
 
 # Создаем список графиков
 plots = []
@@ -40,48 +44,59 @@ class CustomViewBox(pg.ViewBox):
         else:
             # Прокрутка по вертикальной оси, если Ctrl не зажат
             y_range = self.viewRange()[1]  # Получаем текущий диапазон оси Y
-            scroll_speed = (y_range[1] - y_range[0]) / 0.1  # Скорость прокрутки зависит от масштаба
+            scroll_speed = (y_range[1] - y_range[0]) / 0.2  # Скорость прокрутки зависит от масштаба
             self.translateBy(y=scroll_speed / -ev.delta())
 
 # Функция для создания графиков
-def create_plot(title, data, color, show_y_axis, min_x=None, max_x=None):
-    p = win.addPlot(viewBox=CustomViewBox())  # Используем кастомный ViewBox
-    p.setLabels(left='Depth' if show_y_axis else '', top=title)
-    p.showGrid(x=True, y=True)  # Включаем сетку по осям X и Y
-    p.setDownsampling(mode='peak')
-    p.setClipToView(True)
 
-    p.invertY(True)  # Инвертируем ось Y (глубина увеличивается вниз)
+def create_plot(title, data, color, show_y_axis, min_x=None, max_x=None, title_color='blue'):
+    splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
+
+    layout.addWidget(splitter)
+    plot_widget = pg.PlotWidget(viewBox=CustomViewBox())
+    splitter.addWidget(plot_widget)
+
+
+    plot_widget.setTitle(title, color=title_color)
+    plot_widget.showGrid(x=True, y=True)
+    plot_widget.setClipToView(True)
+    plot_widget.invertY(True)
 
     # Убираем ось Y для всех графиков, кроме первого
     if not show_y_axis:
-        p.getAxis('left').setStyle(showValues=False)
+        plot_widget.getAxis('left').setStyle(showValues=False)
 
     # Показываем верхнюю ось X и скрываем нижнюю
-    p.showAxis('top', show=True)
-    p.hideAxis('bottom')
+    plot_widget.showAxis('top', show=True)
+    plot_widget.hideAxis('bottom')
 
     # Устанавливаем диапазон по оси X, если указаны min_x и max_x
     if min_x is not None and max_x is not None:
-        p.setXRange(min_x, max_x)
-
-    # Создаем кривую
-    curve = p.plot(data, common_depth, pen=color)
+        plot_widget.setXRange(min_x, max_x)
 
     # Включаем только вертикальное масштабирование на каждом графике
-    p.getViewBox().setMouseEnabled(x=False, y=True)
+    plot_widget.getViewBox().setMouseEnabled(x=False, y=True)
+
+    # Создаем кривую, если переданы данные
+    if data is not None:
+        curve = plot_widget.plot(data, common_depth, pen=color)
+        curves.append(curve)
 
     # Добавляем к спискам
-    plots.append(p)
-    curves.append(curve)
+    plots.append(plot_widget)
+    return plot_widget
 
+# Создаем графики
+create_plot("GK_interp", GK_interp, 'r', True, min_x=-10, max_x=10, title_color='red')
 
-# Создаем графики с параметрами min_x и max_x
-create_plot("GK_interp", GK_interp, 'r', True, min_x=-10, max_x=10)  # Первый график с осью Y и заданным диапазоном X
-create_plot("NML1_interp", NML1_interp, 'g', False, min_x=-2, max_x=2)  # Остальные без оси Y, но с сеткой и диапазоном X
-create_plot("NML2_interp", NML2_interp, 'b', False, min_x=-1, max_x=10)
-create_plot("NML3_interp", NML3_interp, 'c', False, min_x=-3, max_x=3)
-create_plot("DS_interp", DS_interp, 'm', False, min_x=-1.5, max_x=5)
+# Создаем общий график для NML1, NML2 и NML3
+nml_plot = create_plot("NML1, NML2, NML3", None, None, False, min_x=-3, max_x=10, title_color='green')
+nml_plot.plot(NML1_interp, common_depth, pen='g', name="NML1")
+nml_plot.plot(NML2_interp, common_depth, pen='b', name="NML2")
+nml_plot.plot(NML3_interp, common_depth, pen='c', name="NML3")
+
+# Создаем график для DS_interp
+create_plot("DS_interp", DS_interp, 'm', False, min_x=-1.5, max_x=5, title_color='purple')
 
 # Связываем только вертикальные оси всех графиков для синхронного масштабирования и прокрутки
 for i in range(1, len(plots)):
@@ -89,4 +104,5 @@ for i in range(1, len(plots)):
 
 # Запускаем приложение
 if __name__ == '__main__':
+    win.show()
     QtWidgets.QApplication.instance().exec_()
