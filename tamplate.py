@@ -18,7 +18,7 @@ app = QtWidgets.QApplication([])
 win = QtWidgets.QMainWindow()
 central_widget = QtWidgets.QWidget()
 win.setCentralWidget(central_widget)
-layout = QtWidgets.QHBoxLayout(central_widget)
+layout = QtWidgets.QVBoxLayout(central_widget)
 win.setWindowTitle('Каротажные кривые')
 win.resize(1000, 600)
 
@@ -26,9 +26,13 @@ win.resize(1000, 600)
 pg.setConfigOption('background', 'w')
 pg.setConfigOption('foreground', 'k')
 
-# Создаем список графиков
+# Создаем QSplitter для размещения графиков
+splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
+layout.addWidget(splitter)
+
+# Список графиков и кривых
 plots = []
-curves = []
+
 
 # Класс, наследующий ViewBox, чтобы обработать события масштабирования и прокрутки
 class CustomViewBox(pg.ViewBox):
@@ -48,14 +52,9 @@ class CustomViewBox(pg.ViewBox):
             self.translateBy(y=scroll_speed / -ev.delta())
 
 # Функция для создания графиков
-
 def create_plot(title, data, color, show_y_axis, min_x=None, max_x=None, title_color='blue'):
-    splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
-
-    layout.addWidget(splitter)
     plot_widget = pg.PlotWidget(viewBox=CustomViewBox())
     splitter.addWidget(plot_widget)
-
 
     plot_widget.setTitle(title, color=title_color)
     plot_widget.showGrid(x=True, y=True)
@@ -80,27 +79,27 @@ def create_plot(title, data, color, show_y_axis, min_x=None, max_x=None, title_c
     # Создаем кривую, если переданы данные
     if data is not None:
         curve = plot_widget.plot(data, common_depth, pen=color)
-        curves.append(curve)
 
     # Добавляем к спискам
     plots.append(plot_widget)
     return plot_widget
 
 # Создаем графики
-create_plot("GK_interp", GK_interp, 'r', True, min_x=-10, max_x=10, title_color='red')
+create_plot("GK_interp", GK_interp, 'r', True, min_x=0, max_x=2, title_color='red')
 
 # Создаем общий график для NML1, NML2 и NML3
-nml_plot = create_plot("NML1, NML2, NML3", None, None, False, min_x=-3, max_x=10, title_color='green')
+nml_plot = create_plot("NML1, NML2, NML3", None, None, False, min_x=0, max_x=2, title_color='green')
 nml_plot.plot(NML1_interp, common_depth, pen='g', name="NML1")
 nml_plot.plot(NML2_interp, common_depth, pen='b', name="NML2")
 nml_plot.plot(NML3_interp, common_depth, pen='c', name="NML3")
 
 # Создаем график для DS_interp
-create_plot("DS_interp", DS_interp, 'm', False, min_x=-1.5, max_x=5, title_color='purple')
+create_plot("DS_interp", DS_interp, 'm', False, min_x=0, max_x=2, title_color='purple')
 
 # Связываем только вертикальные оси всех графиков для синхронного масштабирования и прокрутки
 for i in range(1, len(plots)):
     plots[i].setYLink(plots[0])  # Связываем вертикальное масштабирование
+
 
 # Запускаем приложение
 if __name__ == '__main__':
