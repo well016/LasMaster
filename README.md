@@ -24,7 +24,7 @@ LasMaster — это графическое приложение для рабо
 1. Клонируйте репозиторий:
 
    ```bash
-   git clone https://github.com/yourusername/LasMaster.git
+   git clone https://github.com/well016/LasMaster.git
    cd LasMaster
    ```
 
