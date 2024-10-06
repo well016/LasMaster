@@ -17,7 +17,7 @@ LasMaster — это графическое приложение для рабо
 - Matplotlib
 - Pandas
 - Lasio
-- Другие зависимости из `requirements.txt` (если имеется)
+- Другие зависимости из `requirements.txt`
 
 ### Шаги установки
 
