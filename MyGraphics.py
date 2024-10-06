@@ -137,7 +137,7 @@ def plot_graph_smart():
     depth_start = -depth_values[:-1]
     depth_end = -depth_values[1:]
 
-    mask = (depth_start >= depth_max) & (depth_end <= depth_min)
+    mask = (depth_start > depth_max) & (depth_end < depth_min)
     filtered_indices = np.where(mask)[0]
     filtered_depth_start = depth_start[filtered_indices]
     filtered_depth_end = depth_end[filtered_indices]
