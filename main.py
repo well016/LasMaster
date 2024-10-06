@@ -173,19 +173,43 @@ class LasMaster(QMainWindow):
         self.companovka_for_plot.addWidget(self.toolbar)
         self.collector_status_table()
 
-    def collector_status_table(self):
-        # Two separate lists
+    def group_depths_by_status(self):
         collector_status = MyGraphics.get_analysis_collector()
         GK, NML1, NML2, NML3, DEPTH, DS = MyGraphics.data_reading()
-        depths = DEPTH
-        statuses = collector_status  # Example statuses
+        depths= DEPTH
+        statuses= collector_status
+        intervals = []
+        stats = []
+        start_depth = depths[0]
+        current_status = statuses[0]
+
+        for i in range(1, len(depths)):
+            if statuses[i] != current_status:
+                end_depth = depths[i - 1]
+                if end_depth - start_depth >= 0.5:
+                    intervals.append(f"{start_depth}-{end_depth}м")
+                    stats.append(current_status)
+                start_depth = depths[i]
+                current_status = statuses[i]
+
+        # Добавление последнего интервала
+        end_depth = depths[-1]
+        if end_depth - start_depth >= 0.5:
+            intervals.append(f"{start_depth}-{end_depth} м")
+            stats.append(current_status)
+
+        return intervals, stats
+
+    def collector_status_table(self):
+        depths, statuses= self.group_depths_by_status()
 
         # Combine the lists into a single data structure
         data = list(zip(depths, statuses))
 
+
         # Create the model
         model = QStandardItemModel(len(data), 2)  # Number of rows, Number of columns
-        model.setHorizontalHeaderLabels(["Глубина,м", "Статус коллектора"])
+        model.setHorizontalHeaderLabels(["Интервал глубин,м", "Статус коллектора"])
 
         # Populate the model with data from the combined lists
         for row, (depth, status) in enumerate(data):
@@ -211,11 +235,12 @@ class LasMaster(QMainWindow):
             self.version.ui.label_4.setText(json.load(f)["VERSION"])
         self.version.show()
 
+
     def save_excel(self):
-        collector_status=MyGraphics.get_analysis_collector()
-        GK, NML1, NML2, NML3, DEPTH,DS= MyGraphics.data_reading()
+        DEPTH, collector_status= self.group_depths_by_status()
+
         data = {
-            "Глубина,м": DEPTH,
+            "Интервал глубин,м": DEPTH,
             "Статус Коллектора": collector_status
         }
 
