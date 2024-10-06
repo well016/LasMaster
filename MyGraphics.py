@@ -29,17 +29,29 @@ def data_reading():
         f = json.load(f)
     GK_las = lasio.read(f["GK"])
     NML_las = lasio.read(f["NML1"])
+    DS_las=lasio.read(f["DS"])
     GK = GK_las['GK']
     NML1 = NML_las['NML1']
     NML2 = NML_las['NML2']
     NML3 = NML_las['NML3']
-    DEPTH_GK = GK_las['DEPT']
-    DEPTH_NML = NML_las['DEPT']
+    try:
+        DEPTH_GK = GK_las['DEPT']
+    except:
+        DEPTH_GK = GK_las['DEPTH']
+    try:
+        DEPTH_NML = NML_las['DEPT']
+    except:
+        DEPTH_NML = NML_las['DEPTH']
+
     try:
         DS = NML_las['DS']
     except:
-        DS = NML_las['DS:1']
-
+        try:
+            DS = NML_las['DS:1']
+        except:
+            DS = DS_las['DS']
+    if max(DS)<1:
+        DS=DS*1000
     # Общая глубина - объединение глубин GK и NML
     common_depth = np.union1d(DEPTH_GK, DEPTH_NML)
 
@@ -101,7 +113,7 @@ def plot_graph_smart():
     user_min_gk = 0  # Минимальное значение для оси X графика GK
     user_max_gk = 20  # Максимальное значение для оси X графика GK
     user_min_x = 0  # Минимальное значение для оси X графика NML
-    user_max_x = 100  # Максимальное значение для оси X графика NML
+    user_max_x = 200  # Максимальное значение для оси X графика NML
     user_min_ds= 200 # Минимальное значение для оси X графика DS
     user_max_ds = 300 # Максимальное значение для оси X графика DS
 
