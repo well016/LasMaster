@@ -8,10 +8,21 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication
 import math
 import matplotlib.collections as mc
+import time
+
 
 # Set the backend to Qt for compatibility with PySide6
 mpl.use('QtAgg')
 
+## Декоратор для подсчета времени выполнения функции
+def time_it(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"Время выполнения функции {func.__name__}: {end_time - start_time} секунд")
+        return result
+    return wrapper
 
 def data_reading():
     with open("settings.json", 'r') as f:
@@ -41,7 +52,7 @@ def data_reading():
 
     return GK_interp, NML1_interp, NML2_interp, NML3_interp, common_depth, DS_interp
 
-
+@time_it
 def get_analysis_collector():
     GK, NML1, NML2, NML3, DEPTH, DS = data_reading()
     with open("settings.json", 'r') as f:
@@ -80,6 +91,7 @@ def get_analysis_collector():
     return collector_status
 
 
+@time_it
 def plot_graph_smart():
     GK, NML1, NML2, NML3, DEPTH, DS = data_reading()
     fig, (ax1, ax4, ax2, ax3) = plt.subplots(nrows=1, ncols=4, figsize=(8, 15), dpi=100, facecolor='white',
@@ -235,6 +247,7 @@ def plot_graph_smart():
         return max(min(value, max_value), min_value)
 
     # Function to handle zooming and scrolling
+    @time_it
     def zoom(event):
         nonlocal current_grid_interval
         base_scale = 1.1
