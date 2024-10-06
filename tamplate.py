@@ -1,6 +1,6 @@
 import sys  # Импортируем модуль sys, чтобы взаимодействовать с системными параметрами и аргументами командной строки
 import pyqtgraph as pg  # Импортируем pyqtgraph, библиотеку для построения графиков
-from pyqtgraph.Qt import QtCore, QtWidgets  # Импортируем QtCore и QtWidgets из pyqtgraph для работы с элементами интерфейса
+from pyqtgraph.Qt import QtCore, QtWidgets # Импортируем QtCore и QtWidgets из pyqtgraph для работы с элементами интерфейса
 import numpy as np  # Импортируем numpy, библиотеку для работы с массивами и научными вычислениями
 import json
 import lasio
@@ -42,7 +42,8 @@ app = QtWidgets.QApplication([])  # Создаем экземпляр прило
 win = QtWidgets.QMainWindow()  # Создаем главное окно
 central_widget = QtWidgets.QWidget()  # Создаем центральный виджет для главного окна
 win.setCentralWidget(central_widget)  # Устанавливаем центральный виджет в главное окно
-layout = QtWidgets.QVBoxLayout(central_widget)  # Устанавливаем вертикальный лэйаут в центральный виджет
+layout = QtWidgets.QVBoxLayout(central_widget)# Устанавливаем вертикальный лэйаут в центральный виджет
+
 win.setWindowTitle('Каротажные кривые')  # Устанавливаем заголовок окна
 win.resize(1000, 600)  # Устанавливаем размер окна 1000x600 пикселей
 
@@ -50,8 +51,16 @@ win.resize(1000, 600)  # Устанавливаем размер окна 1000x6
 pg.setConfigOption('background', 'w')  # Устанавливаем белый фон для графиков
 
 # Создаем QSplitter для размещения графиков
-splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)  # Создаем горизонтальный QSplitter для размещения графиков
-layout.addWidget(splitter)  # Добавляем QSplitter в лэйаут
+splitter = QtWidgets.QSplitter()  # Создаем горизонтальный QSplitter для размещения графиков
+scroll=QtWidgets.QScrollBar(QtCore.Qt.Horizontal)
+layout.addWidget(splitter)
+layout.addWidget(scroll)
+scroll.setFixedHeight(15)
+
+
+
+  # Добавляем QSplitter в лэйаут
+
 
 # Список графиков и кривых
 plots = []  # Создаем пустой список для хранения графиков
@@ -74,9 +83,9 @@ class CustomViewBox(pg.ViewBox):
 
 # Функция для создания графиков
 def create_plot(title, show_y_axis=False, min_x=None, max_x=None, title_color='black'):
-    plot_widget = pg.PlotWidget(viewBox=CustomViewBox())  # Создаем экземпляр PlotWidget с CustomViewBox
+    plot_widget = pg.PlotWidget(viewBox=CustomViewBox()) # Создаем экземпляр PlotWidget с CustomViewBox
+     # Устанавливаем размер графика
     splitter.addWidget(plot_widget)  # Добавляем график в QSplitter
-
     plot_widget.setTitle(title, color=title_color)  # Устанавливаем заголовок графика и его цвет
     plot_widget.showGrid(x=True, y=True)  # Включаем отображение сетки по осям X и Y
     plot_widget.invertY(True)  # Инвертируем ось Y
@@ -115,8 +124,11 @@ add_curve(nml_plot, NML1_interp, common_depth, color='red')
 add_curve(nml_plot, NML2_interp, common_depth, color='blue')
 add_curve(nml_plot, NML3_interp, common_depth, color='aqua')
 
-plot_ds = create_plot("DS_interp", min_x=150, max_x=500, title_color='Green')
-add_curve(plot_ds, DS_interp, common_depth, color='m', width=3)
+plot_ds= create_plot("DS", min_x=200, max_x=400, title_color='blue')
+add_curve(plot_ds, DS_interp, common_depth, color='green')
+
+
+
 
 # Связываем только вертикальные оси всех графиков для синхронного масштабирования и прокрутки
 for i in range(1, len(plots)):
