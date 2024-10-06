@@ -44,12 +44,6 @@ LasMaster — это графическое приложение для рабо
    pip install -r requirements.txt
    ```
 
-   Если файла `requirements.txt` нет, установите зависимости вручную:
-
-   ```bash
-   pip install PySide6 matplotlib pandas lasio
-   ```
-
 ## Использование
 
 1. Запустите приложение:
