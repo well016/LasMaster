@@ -12,6 +12,4 @@ class Plot(FigureCanvas):
         FigureCanvas.setSizePolicy(self,QSizePolicy.Expanding, QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
-        pass
-
 
