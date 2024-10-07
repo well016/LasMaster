@@ -59,6 +59,8 @@ scroll.setFixedHeight(15)
 
 
 
+
+
   # Добавляем QSplitter в лэйаут
 
 
@@ -128,7 +130,10 @@ plot_ds= create_plot("DS", min_x=200, max_x=400, title_color='blue')
 add_curve(plot_ds, DS_interp, common_depth, color='green')
 
 
-
+splitter.setSizes([300 for i in range(len(plots))])
+# Добавляем пустой виджет в splitter
+empty_widget = QtWidgets.QWidget()
+splitter.addWidget(empty_widget)
 
 # Связываем только вертикальные оси всех графиков для синхронного масштабирования и прокрутки
 for i in range(1, len(plots)):
