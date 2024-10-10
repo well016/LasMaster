@@ -85,8 +85,10 @@ class LasMaster(QMainWindow):
                 if j >= self.nml_param.ui.ds_min.value() and j <= self.nml_param.ui.ds_max.value():
                     if not math.isnan(i):
                         gk.append(i)
-            self.nml_param.ui.ds_gk_min.setValue(min(gk))
-            self.nml_param.ui.ds_gk_max.setValue(max(gk))
+            gk=sorted(gk)
+            self.nml_param.ui.ds_gk_min.setValue(gk[3])
+            self.nml_param.ui.ds_gk_max.setValue(gk[-4])
+            print(gk)
 
         # Подключаем сигналы для кнопок
         self.nml_param.ui.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.save_param)
