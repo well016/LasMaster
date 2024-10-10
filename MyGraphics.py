@@ -30,10 +30,12 @@ def data_reading():
     GK_las = lasio.read(f["GK"])
     NML_las = lasio.read(f["NML1"])
     DS_las=lasio.read(f["DS"])
+    KP_las=lasio.read(f["KP"])
     GK = GK_las['GK']
     NML1 = NML_las['NML1']
     NML2 = NML_las['NML2']
     NML3 = NML_las['NML3']
+    KP=KP_las['KP']
     try:
         DEPTH_GK = GK_las['DEPT']
     except:
