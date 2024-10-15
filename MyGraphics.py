@@ -69,6 +69,35 @@ def data_reading():
     KP_interp = np.interp(common_depth, DEPTH_KP, KP)
 
     return GK_interp, NML1_interp, NML2_interp, NML3_interp, common_depth, DS_interp ,KP_interp
+def get_u0():
+    GK, NML1, NML2, NML3, DEPTH, DS, KP = data_reading()
+    with open("settings.json", 'r') as f:
+        f = json.load(f)
+    t1 = f["t1"]
+    t2 = f["t2"]
+    t3 = f["t3"]
+    u01=[]
+    u02=[]
+    u03=[]
+    for u1,u2,u3 in zip(NML1, NML2, NML3):
+        gamma_12 = (np.log(u2) - np.log(u1)) / (t1 - t2)
+        gamma_23 = (np.log(u3) - np.log(u2)) / (t2 - t3)
+
+        # Среднее значение γ
+        gamma = (gamma_12 + gamma_23) / 2
+
+        # Вычисляем начальную амплитуду U0
+        a = u1 * np.exp(gamma * t1)
+        u03.append(a)
+        a = u1**(t2/(t2-t1))/u2**(t1/(t2-t1))
+        u01.append(a)
+        a= u1**(t3/(t3-t1))/u3**(t1/(t3-t1))
+        u02.append(a)
+    for i,j,z in zip(u01,u02,u03):
+        print(i,j,z)
+
+    return u01
+get_u0()
 
 @time_it
 def get_analysis_collector():
@@ -112,6 +141,7 @@ def get_analysis_collector():
 @time_it
 def plot_graph_smart():
     GK, NML1, NML2, NML3, DEPTH, DS, KP = data_reading()
+    u0 = get_u0()
     fig, (ax1, ax4, ax2, ax5, ax3) = plt.subplots(nrows=1, ncols=5, figsize=(8, 15), dpi=100, facecolor='white',
                                              gridspec_kw={'width_ratios': [1, 0.4, 1,1, 0.2]})
 
@@ -142,6 +172,7 @@ def plot_graph_smart():
     ax2.plot(NML1, -DEPTH, color='red')
     ax2.plot(NML2, -DEPTH, color='blue')
     ax2.plot(NML3, -DEPTH, color='aqua')
+    ax2.plot(u0,-DEPTH,color='green')
 
     # Основной график для ax5
     ax5.plot(KP,-DEPTH, color='blue')
