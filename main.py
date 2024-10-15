@@ -124,6 +124,9 @@ class LasMaster(QMainWindow):
             "a3":self.nml_param.ui.ds_a3.value(),
             "a4":self.nml_param.ui.ds_a4.value(),
             "Kgl":self.nml_param.ui.ds_k.value(),
+            't1':self.nml_param.ui.ds_t1.value(),
+            't2': self.nml_param.ui.ds_t2.value(),
+            't3': self.nml_param.ui.ds_t3.value()
         })
 
         # Сохраняем обновленные параметры обратно в JSON файл
@@ -146,6 +149,10 @@ class LasMaster(QMainWindow):
             self.nml_param.ui.ds_a3.setValue(params.get("a3",0))
             self.nml_param.ui.ds_a4.setValue(params.get("a4",0))
             self.nml_param.ui.ds_k.setValue(params.get("Kgl", 0))
+            self.nml_param.ui.ds_t1.setValue(params.get('t1',0))
+            self.nml_param.ui.ds_t2.setValue(params.get('t2', 0))
+            self.nml_param.ui.ds_t3.setValue(params.get('t3', 0))
+
 
 
 
