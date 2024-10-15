@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>379</width>
-    <height>305</height>
+    <width>406</width>
+    <height>369</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -566,17 +566,141 @@ subcontrol-position:left;
       </widget>
      </item>
      <item>
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Orientation::Vertical</enum>
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Время фикцации ЯМР кривых</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignCenter</set>
        </property>
-      </spacer>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QDoubleSpinBox" name="ds_t1">
+         <property name="styleSheet">
+          <string notr="true">QDoubleSpinBox
+{
+border : 2px solid rgb(0, 170, 255);
+background : white;
+border-radius: 8
+}
+QDoubleSpinBox::hover
+{
+border : 2px solid rgb(0, 170, 255);
+background : rgb(170, 255, 255);
+}
+QDoubleSpinBox::up-button
+{
+
+subcontrol-position:right;
+image: url(:/plus.svg);
+
+}
+QDoubleSpinBox::down-button
+{
+subcontrol-position:left;
+	image: url(:/minus.svg);
+}</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
+         </property>
+         <property name="prefix">
+          <string>t1=</string>
+         </property>
+         <property name="suffix">
+          <string> мс</string>
+         </property>
+         <property name="maximum">
+          <double>7686786.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="ds_t2">
+         <property name="styleSheet">
+          <string notr="true">QDoubleSpinBox
+{
+border : 2px solid rgb(0, 170, 255);
+background : white;
+border-radius: 8
+}
+QDoubleSpinBox::hover
+{
+border : 2px solid rgb(0, 170, 255);
+background : rgb(170, 255, 255);
+}
+QDoubleSpinBox::up-button
+{
+
+subcontrol-position:right;
+image: url(:/plus.svg);
+
+}
+QDoubleSpinBox::down-button
+{
+subcontrol-position:left;
+	image: url(:/minus.svg);
+}</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
+         </property>
+         <property name="prefix">
+          <string>t2=</string>
+         </property>
+         <property name="suffix">
+          <string> мс</string>
+         </property>
+         <property name="maximum">
+          <double>7868768.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="ds_t3">
+         <property name="styleSheet">
+          <string notr="true">QDoubleSpinBox
+{
+border : 2px solid rgb(0, 170, 255);
+background : white;
+border-radius: 8
+}
+QDoubleSpinBox::hover
+{
+border : 2px solid rgb(0, 170, 255);
+background : rgb(170, 255, 255);
+}
+QDoubleSpinBox::up-button
+{
+
+subcontrol-position:right;
+image: url(:/plus.svg);
+
+}
+QDoubleSpinBox::down-button
+{
+subcontrol-position:left;
+	image: url(:/minus.svg);
+}</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
+         </property>
+         <property name="prefix">
+          <string>t3=</string>
+         </property>
+         <property name="suffix">
+          <string> мс</string>
+         </property>
+         <property name="maximum">
+          <double>768768.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
