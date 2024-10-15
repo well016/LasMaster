@@ -27,24 +27,25 @@ def time_it(func):
 def data_reading():
     with open("settings.json", 'r') as f:
         f = json.load(f)
+    # Чтение  las file
     GK_las = lasio.read(f["GK"])
     NML_las = lasio.read(f["NML1"])
     DS_las=lasio.read(f["DS"])
     KP_las=lasio.read(f["KP"])
+    # Присвоили к переменным список с данными кривой
     GK = GK_las['GK']
     NML1 = NML_las['NML1']
     NML2 = NML_las['NML2']
     NML3 = NML_las['NML3']
-    KP=KP_las['KP']
-    try:
-        DEPTH_GK = GK_las['DEPT']
+    DEPTH_GK = GK_las[0]
+    DEPTH_NML = NML_las[0]
+    try :
+        KP=KP_las['KP']
     except:
-        DEPTH_GK = GK_las['DEPTH']
-    try:
-        DEPTH_NML = NML_las['DEPT']
-    except:
-        DEPTH_NML = NML_las['DEPTH']
-
+        try:
+            KP=KP_las['KPGKS^ED']
+        except:
+            KP=KP_las['KPEF']
     try:
         DS = NML_las['DS']
     except:
