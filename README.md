@@ -1,6 +1,6 @@
 # LasMaster
 
-LasMaster — это графическое приложение для работы с LAS-файлами, которое позволяет импортировать данные скважин, выбирать и анализировать кривые, настраивать параметры, визуализировать результаты и экспортировать данные в Excel.
+LasMaster — это графическое приложение для работы с LAS-файлами, которое позволяет импортировать данные скважин, выбирать и анализировать кривые, настраивать параметры, визуализировать результаты и экспортировать данные в Excel.(На данный момент доступен только автоматический анализ по кривым ЯМК)
 <!--Блок информации о репозитории в бейджах-->
 ![Static Badge](https://img.shields.io/badge/well016-_LasMaster-blue?style=plastic&logo=LasMaster)
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fwell016%2FLasMaster%2F6d43ec5a6788c04f5b1576a18c65ac42aed2b802%2Fsettings.json&query=%24.VERSION&label=Version&labelColor=blue&color=green)
