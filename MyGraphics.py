@@ -76,28 +76,25 @@ def get_u0():
     t1 = f["t1"]
     t2 = f["t2"]
     t3 = f["t3"]
-    u01=[]
-    u02=[]
-    u03=[]
-    for u1,u2,u3 in zip(NML1, NML2, NML3):
-        gamma_12 = (np.log(u2) - np.log(u1)) / (t1 - t2)
-        gamma_23 = (np.log(u3) - np.log(u2)) / (t2 - t3)
+    log_NML1 = np.log(NML1)
+    log_NML2 = np.log(NML2)
+    log_NML3 = np.log(NML3)
 
-        # Среднее значение γ
-        gamma = (gamma_12 + gamma_23) / 2
+    # Вычисление γ12 и γ23
+    gamma_12 = (log_NML2 - log_NML1) / (t1 - t2)
+    gamma_23 = (log_NML3 - log_NML2) / (t2 - t3)
 
-        # Вычисляем начальную амплитуду U0
-        a = u1 * np.exp(gamma * t1)
-        u03.append(a)
-        a = u1**(t2/(t2-t1))/u2**(t1/(t2-t1))
-        u01.append(a)
-        a= u1**(t3/(t3-t1))/u3**(t1/(t3-t1))
-        u02.append(a)
-    for i,j,z in zip(u01,u02,u03):
-        print(i,j,z)
+    # Среднее значение γ
+    gamma = (gamma_12 + gamma_23) / 2
 
+    # Вычисляем начальные амплитуды U0
+    u03 = NML1 * np.exp(gamma * t1)
+
+    u01 = np.round((NML1 ** (t2 / (t2 - t1))) / (NML2 ** (t1 / (t2 - t1))), 2)
+
+    u02 = (NML1 ** (t3 / (t3 - t1))) / (NML3 ** (t1 / (t3 - t1)))
     return u01
-get_u0()
+
 
 @time_it
 def get_analysis_collector():
@@ -136,12 +133,26 @@ def get_analysis_collector():
 
 
     return collector_status
+# Функция нормализации
+def normalize(data):
+    data = np.array(data)  # Преобразуем в массив NumPy, если это еще не сделано
+    # Применяем нормализацию, игнорируя NaN значения
+    min_val = np.nanmin(data)  # Находим минимальное значение, игнорируя NaN
+    max_val = np.nanmax(data)  # Находим максимальное значение, игнорируя NaN
 
+    # Проверяем, что max_val больше min_val, чтобы избежать деления на ноль
+    if max_val - min_val == 0:
+        return np.zeros(data.shape)  # Или вернуть массив нулей, если все значения одинаковы
+
+    return (data - min_val) / (max_val - min_val)
 
 @time_it
 def plot_graph_smart():
     GK, NML1, NML2, NML3, DEPTH, DS, KP = data_reading()
-    u0 = get_u0()
+    u0 = normalize(get_u0())*100
+    KP = normalize(KP)*100
+
+
     fig, (ax1, ax4, ax2, ax5, ax3) = plt.subplots(nrows=1, ncols=5, figsize=(8, 15), dpi=100, facecolor='white',
                                              gridspec_kw={'width_ratios': [1, 0.4, 1,1, 0.2]})
 
@@ -152,7 +163,7 @@ def plot_graph_smart():
     user_max_x = 200  # Максимальное значение для оси X графика NML
     user_min_ds= 200 # Минимальное значение для оси X графика DS
     user_max_ds = 300 # Максимальное значение для оси X графика DS
-    user_max_kp = 0.15
+    user_max_kp = 100
     user_min_kp = 0
     # Устанавливаем начальные пределы осей X на основе пользовательских значений
     ax1.set_xlim(user_min_gk, user_max_gk)
@@ -172,10 +183,10 @@ def plot_graph_smart():
     ax2.plot(NML1, -DEPTH, color='red')
     ax2.plot(NML2, -DEPTH, color='blue')
     ax2.plot(NML3, -DEPTH, color='aqua')
-    ax2.plot(u0,-DEPTH,color='green')
 
     # Основной график для ax5
     ax5.plot(KP,-DEPTH, color='blue')
+    ax5.plot(u0, -DEPTH, color='green')
 
     collector_status = get_analysis_collector()
 
@@ -223,6 +234,7 @@ def plot_graph_smart():
     wrap_lines(DS, DEPTH, user_min_ds, user_max_ds, ax4, color='green', linestyle=':')
 
     wrap_lines(KP,DEPTH, user_min_kp, user_max_kp,ax5,color='blue', linestyle=':')
+    wrap_lines(u0, DEPTH, user_min_kp, user_max_kp, ax5, color='green', linestyle=':')
 
     # Для графика NML1
     wrap_lines(NML1, DEPTH, user_min_x, user_max_x, ax2, color='red', linestyle=':')
@@ -247,6 +259,14 @@ def plot_graph_smart():
     ax2.text(0.5, 1.035, f'NML3\n{min((filter(lambda x: not math.isnan(x), NML3)))} - '
                          f'{max((filter(lambda x: not math.isnan(x), NML3)))}', ha='center', fontsize=8, color='aqua',
              transform=ax2.transAxes)
+    ax5.text(0.5, 1.035, f'KP\n{min((filter(lambda x: not math.isnan(x), KP)))} - '
+                         f'{max((filter(lambda x: not math.isnan(x), KP)))}', ha='center', fontsize=8, color='blue',
+             transform=ax5.transAxes)
+    ax5.text(0.5, 1.065, f'NML0\n{min((filter(lambda x: not math.isnan(x), u0)))} - '
+                         f'{max((filter(lambda x: not math.isnan(x), u0)))}', ha='center', fontsize=8, color='green',
+             transform=ax5.transAxes)
+
+
     ax3.set_title(f'\nСтатус\nколлектора', fontsize=8, color='green')
 
     fig.subplots_adjust(wspace=0)
@@ -375,7 +395,6 @@ def plot_graph_smart():
     fig.canvas.mpl_connect('scroll_event', zoom)
     print('График построен успешно')
 
-    # plt.show()
     return fig
 
 
