@@ -10,6 +10,7 @@ import math
 import matplotlib.collections as mc
 import time
 
+from pyqtgraph.util.cprint import color
 
 # Set the backend to Qt for compatibility with PySide6
 mpl.use('QtAgg')
@@ -39,6 +40,7 @@ def data_reading():
     NML3 = NML_las['NML3']
     DEPTH_GK = GK_las[0]
     DEPTH_NML = NML_las[0]
+    DEPTH_KP=KP_las[0]
     try :
         KP=KP_las['KP']
     except:
@@ -57,19 +59,20 @@ def data_reading():
         DS=DS*1000
     # Общая глубина - объединение глубин GK и NML
     common_depth = np.union1d(DEPTH_GK, DEPTH_NML)
-
+    common_depth = np.union1d(common_depth,DEPTH_KP)
     # Интерполяция данных по общим глубинам
     GK_interp = np.interp(common_depth, DEPTH_GK, GK)
     NML1_interp = np.interp(common_depth, DEPTH_NML, NML1)
     NML2_interp = np.interp(common_depth, DEPTH_NML, NML2)
     NML3_interp = np.interp(common_depth, DEPTH_NML, NML3)
     DS_interp = np.interp(common_depth, DEPTH_NML, DS)
+    KP_interp = np.interp(common_depth, DEPTH_KP, KP)
 
-    return GK_interp, NML1_interp, NML2_interp, NML3_interp, common_depth, DS_interp
+    return GK_interp, NML1_interp, NML2_interp, NML3_interp, common_depth, DS_interp ,KP_interp
 
 @time_it
 def get_analysis_collector():
-    GK, NML1, NML2, NML3, DEPTH, DS = data_reading()
+    GK, NML1, NML2, NML3, DEPTH, DS, KP = data_reading()
     with open("settings.json", 'r') as f:
         f = json.load(f)
     gk_min = f["GK_MIN"]
@@ -108,9 +111,9 @@ def get_analysis_collector():
 
 @time_it
 def plot_graph_smart():
-    GK, NML1, NML2, NML3, DEPTH, DS = data_reading()
-    fig, (ax1, ax4, ax2, ax3) = plt.subplots(nrows=1, ncols=4, figsize=(8, 15), dpi=100, facecolor='white',
-                                             gridspec_kw={'width_ratios': [1, 0.4, 1, 0.2]})
+    GK, NML1, NML2, NML3, DEPTH, DS, KP = data_reading()
+    fig, (ax1, ax4, ax2, ax5, ax3) = plt.subplots(nrows=1, ncols=5, figsize=(8, 15), dpi=100, facecolor='white',
+                                             gridspec_kw={'width_ratios': [1, 0.4, 1,1, 0.2]})
 
     # Пользовательские границы для осей X (минимальные и максимальные значения для растяжения)
     user_min_gk = 0  # Минимальное значение для оси X графика GK
@@ -119,14 +122,15 @@ def plot_graph_smart():
     user_max_x = 200  # Максимальное значение для оси X графика NML
     user_min_ds= 200 # Минимальное значение для оси X графика DS
     user_max_ds = 300 # Максимальное значение для оси X графика DS
-
+    user_max_kp = 0.15
+    user_min_kp = 0
     # Устанавливаем начальные пределы осей X на основе пользовательских значений
     ax1.set_xlim(user_min_gk, user_max_gk)
     ax2.set_xlim(user_min_x, user_max_x)
     ax4.set_xlim(user_min_ds, user_max_ds)
+    ax5.set_xlim(user_min_kp,user_max_kp)
 
     # Основной график для ax1
-
 
     ax1.plot(GK, -DEPTH, color='red')
 
@@ -138,6 +142,9 @@ def plot_graph_smart():
     ax2.plot(NML1, -DEPTH, color='red')
     ax2.plot(NML2, -DEPTH, color='blue')
     ax2.plot(NML3, -DEPTH, color='aqua')
+
+    # Основной график для ax5
+    ax5.plot(KP,-DEPTH, color='blue')
 
     collector_status = get_analysis_collector()
 
@@ -184,6 +191,8 @@ def plot_graph_smart():
 
     wrap_lines(DS, DEPTH, user_min_ds, user_max_ds, ax4, color='green', linestyle=':')
 
+    wrap_lines(KP,DEPTH, user_min_kp, user_max_kp,ax5,color='blue', linestyle=':')
+
     # Для графика NML1
     wrap_lines(NML1, DEPTH, user_min_x, user_max_x, ax2, color='red', linestyle=':')
 
@@ -212,7 +221,7 @@ def plot_graph_smart():
     fig.subplots_adjust(wspace=0)
     y_ticks = np.arange(min(filter(lambda x: x % 10 == 0, -DEPTH)), max(filter(lambda x: x % 10 == 0, -DEPTH)) + 30, 10)
 
-    for ax in [ax1, ax2, ax3,ax4]:
+    for ax in [ax1, ax2, ax3,ax4,ax5]:
         ax.set_yticks(y_ticks)
         ax.set_ylim(min(-DEPTH), max(-DEPTH))
         ax.yaxis.set_major_locator(MaxNLocator(integer=True))  # Ensure only integer ticks
@@ -223,24 +232,29 @@ def plot_graph_smart():
     ax3.xaxis.set_ticklabels([])
 
     ax4.yaxis.set_ticklabels([])
-    # Добавил шкалу по х с параметрами
+    ax5.yaxis.set_ticklabels([])
+    # Добавил шкалу по х с параметрами наверху
     ax4.xaxis.set_ticks_position('top')
     ax4.tick_params(axis='x', labelsize=7)
+
+    ax5.xaxis.set_ticks_position('top')
+    ax5.tick_params(axis='x',labelsize=7)
 
     ax2.xaxis.set_ticks_position('top')
     ax4.tick_params(axis='x', labelsize=7)
 
     ax1.xaxis.set_ticks_position('top')
     ax4.tick_params(axis='x', labelsize=7)
-
+    #Убираем первое и последнее значения по школе х
     ax1.xaxis.set_major_locator(MaxNLocator(integer=True, prune='both',nbins=4))
     ax2.xaxis.set_major_locator(MaxNLocator(integer=True, prune='both',nbins=4))
     ax4.xaxis.set_major_locator(MaxNLocator(integer=True, prune='both',nbins=4))
+    ax5.xaxis.set_major_locator(MaxNLocator(integer=True, prune='both', nbins=4))
 
 
 
 
-    for ax in [ax1, ax2,ax4]:
+    for ax in [ax1, ax2,ax4,ax5]:
         ax.grid(True, which='both', linestyle='--', color='gray')
         ax.yaxis.set_ticks_position('none')
         ax.xaxis.set_ticks_position('none')
@@ -252,6 +266,12 @@ def plot_graph_smart():
     ax4.grid(True, axis='y', linestyle='--', color='gray')
     ax4.xaxis.set_ticks_position('none')
     ax4.yaxis.set_ticks_position('none')
+
+    ax5.grid(True, axis='y', linestyle='--', color='gray')
+    ax5.xaxis.set_ticks_position('none')
+    ax5.yaxis.set_ticks_position('none')
+
+
 
 
 
@@ -299,7 +319,7 @@ def plot_graph_smart():
             # Updating grid intervals and limits
             current_grid_interval = clamp(round(current_grid_interval), 0.1, 10)
 
-            for ax in [ax1, ax4, ax2, ax3]:
+            for ax in [ax1, ax4, ax2, ax3,ax5]:
                 ax.set_ylim(new_ylim)
                 ax.set_yticks(np.arange(new_ylim[0], new_ylim[1], current_grid_interval))
                 ax.grid(True, which='both', linestyle='--', color='gray')
@@ -316,7 +336,7 @@ def plot_graph_smart():
             else:
                 return
 
-            for ax in [ax1, ax4, ax2, ax3]:
+            for ax in [ax1, ax4, ax2, ax3,ax5]:
                 ax.set_ylim(new_ylim)
                 ax.yaxis.set_major_locator(MaxNLocator(integer=True))
         fig.canvas.draw_idle()

@@ -83,7 +83,7 @@ class LasMaster(QMainWindow):
         # Авто подсчет максимального и минимального ГК
         def auto_gk():
             self.nml_param.ui.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.save_param)
-            GK, NML1, NML2, NML3, DEPTH, DS = MyGraphics.data_reading()
+            GK, NML1, NML2, NML3, DEPTH, DS, KP = MyGraphics.data_reading()
             gk=[]
             for i, j in zip(GK, DEPTH):
                 if j >= self.nml_param.ui.ds_min.value() and j <= self.nml_param.ui.ds_max.value():
@@ -181,7 +181,7 @@ class LasMaster(QMainWindow):
 
     def group_depths_by_status(self):
         collector_status = MyGraphics.get_analysis_collector()
-        GK, NML1, NML2, NML3, DEPTH, DS = MyGraphics.data_reading()
+        GK, NML1, NML2, NML3, DEPTH, DS, KP = MyGraphics.data_reading()
         with open("settings.json", 'r') as file:
             settings = json.load(file)
 
