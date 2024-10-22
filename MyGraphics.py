@@ -148,6 +148,11 @@ def plot_graph_smart():
     GK, NML1, NML2, NML3, DEPTH, DS, KP = data_reading()
     u0 = normalize(get_u0())*100
     KP = normalize(KP)*100
+    w=KP-u0
+    w[w<0]=None
+    for i,j in zip(w,DEPTH):
+        print(i,j)
+
 
 
     fig, (ax1, ax4, ax2, ax5, ax3) = plt.subplots(nrows=1, ncols=5, figsize=(8, 15), dpi=100, facecolor='white',
@@ -210,7 +215,6 @@ def plot_graph_smart():
         for start, end, status in zip(filtered_depth_start, filtered_depth_end, filtered_collector_status):
             segments.append([(0, start), (1, start), (1, end), (0, end)])
             colors.append('green' if status == 'Collector' else 'black')
-
         poly_collection = mc.PolyCollection(segments, facecolors=colors, edgecolors='none')
         ax3.add_collection(poly_collection)
         ax3.set_xlim(0, 1)
