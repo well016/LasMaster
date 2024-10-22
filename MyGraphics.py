@@ -67,6 +67,7 @@ def data_reading():
     NML3_interp = np.interp(common_depth, DEPTH_NML, NML3)
     DS_interp = np.interp(common_depth, DEPTH_NML, DS)
     KP_interp = np.interp(common_depth, DEPTH_KP, KP)
+    KP_interp[(common_depth < DEPTH_KP.min()) | (common_depth > DEPTH_KP.max())] = np.nan
 
     return GK_interp, NML1_interp, NML2_interp, NML3_interp, common_depth, DS_interp ,KP_interp
 def get_u0():
@@ -140,10 +141,6 @@ def normalize(data):
     min_val = np.nanmin(data)  # Находим минимальное значение, игнорируя NaN
     max_val = np.nanmax(data)  # Находим максимальное значение, игнорируя NaN
 
-    # Проверяем, что max_val больше min_val, чтобы избежать деления на ноль
-    if max_val - min_val == 0:
-        return np.zeros(data.shape)  # Или вернуть массив нулей, если все значения одинаковы
-
     return (data - min_val) / (max_val - min_val)
 
 @time_it
@@ -187,38 +184,38 @@ def plot_graph_smart():
     # Основной график для ax5
     ax5.plot(KP,-DEPTH, color='blue')
     ax5.plot(u0, -DEPTH, color='green')
+    # Построение колонки статуса коллектора
+    def plot_collector_status():
+        collector_status = get_analysis_collector()
+        with open("settings.json", 'r') as file:
+            settings = json.load(file)
 
-    collector_status = get_analysis_collector()
+        depth_min = -settings["DEEP_MIN"]
+        depth_max = -settings["DEEP_MAX"]
+        depth_values = np.array(DEPTH)
 
-    with open("settings.json", 'r') as file:
-        settings = json.load(file)
+        collector_status = np.array(collector_status)
 
-    depth_min = -settings["DEEP_MIN"]
-    depth_max = -settings["DEEP_MAX"]
-    depth_values = np.array(DEPTH)
-    collector_status = np.array(collector_status)
+        depth_start = -depth_values[:-1]
+        depth_end = -depth_values[1:]
 
-    depth_start = -depth_values[:-1]
-    depth_end = -depth_values[1:]
+        mask = (depth_start > depth_max) & (depth_end < depth_min)
+        filtered_indices = np.where(mask)[0]
+        filtered_depth_start = depth_start[filtered_indices]
+        filtered_depth_end = depth_end[filtered_indices]
+        filtered_collector_status = collector_status[filtered_indices]
 
-    mask = (depth_start > depth_max) & (depth_end < depth_min)
-    filtered_indices = np.where(mask)[0]
-    filtered_depth_start = depth_start[filtered_indices]
-    filtered_depth_end = depth_end[filtered_indices]
-    filtered_collector_status = collector_status[filtered_indices]
+        segments = []
+        colors = []
+        for start, end, status in zip(filtered_depth_start, filtered_depth_end, filtered_collector_status):
+            segments.append([(0, start), (1, start), (1, end), (0, end)])
+            colors.append('green' if status == 'Collector' else 'black')
 
-    segments = []
-    colors = []
-    for start, end, status in zip(filtered_depth_start, filtered_depth_end, filtered_collector_status):
-        segments.append([(0, start), (1, start), (1, end), (0, end)])
-        colors.append('green' if status == 'Collector' else 'black')
-
-    poly_collection = mc.PolyCollection(segments, facecolors=colors, edgecolors='none')
-    ax3.add_collection(poly_collection)
-    ax3.set_xlim(0, 1)
-    ax3.autoscale_view()
-
-
+        poly_collection = mc.PolyCollection(segments, facecolors=colors, edgecolors='none')
+        ax3.add_collection(poly_collection)
+        ax3.set_xlim(0, 1)
+        ax3.autoscale_view()
+    plot_collector_status()
     # Переносим линии справа налево как пунктирные линии несколько раз, если они выходят за пределы
     def wrap_lines(values, depth, limit_min, limit_max, ax, color, linestyle):
         shift = (limit_max - limit_min)
