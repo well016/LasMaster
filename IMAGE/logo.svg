@@ -1,0 +1,47 @@
+<svg width="600" height="70" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Определяем фильтр для неонового свечения -->
+    <filter id="neon-glow">
+      <!-- Утолщаем текст для более яркого свечения -->
+      <feMorphology in="SourceAlpha" operator="dilate" radius="3" result="thicken"/>
+      <!-- Применяем размытие и анимацию его степени для пульсации -->
+      <feGaussianBlur in="thicken" stdDeviation="5" result="blurred">
+        <animate attributeName="stdDeviation" values="5;10;5" dur="1s" repeatCount="indefinite"/>
+      </feGaussianBlur>
+      <!-- Применяем цветовое преобразование и анимируем цвета для смены оттенков свечения -->
+      <feColorMatrix type="matrix" in="blurred" result="colouredBlur" values="
+        0 0 0 0 0.07
+        0 0 0 0 0.56
+        0 0 0 0 1
+        0 0 0 1 0">
+        <animate attributeName="values"
+          values="
+            0 0 0 0 .07  0 0 0 0 .56  0 0 0 0 1  0 0 0 1 0;
+            0 0 0 0 0    0 0  0 1     0 0 0 0 1  0 0 0 1 0;
+            0 0 0 0 .07 0 0 0 0 .56  0 0 0 0 1  0 0 0 1 0"
+          dur="3s" repeatCount="indefinite"/>
+      </feColorMatrix>
+      <!-- Объединяем эффекты свечения и исходного текста -->
+      <feMerge>
+        <feMergeNode in="colouredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Стилизация текста -->
+  <style>
+    .neon-text {
+      font-family: 'Impact', sans-serif;
+      font-size: 65px;
+      fill: #ffffff;
+      text-anchor: middle;
+    }
+    .blue-letter {
+      fill: blue;
+    }
+  </style>
+  <!-- Текст с применением фильтра неонового свечения -->
+  <text x="50%" y="50%" dy=".35em" class="neon-text" filter="url(#neon-glow)">
+    <tspan class="blue-letter">L</tspan>as<tspan class="blue-letter">M</tspan>aster
+  </text>
+</svg>
