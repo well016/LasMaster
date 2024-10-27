@@ -6,7 +6,7 @@
       <feMorphology in="SourceAlpha" operator="dilate" radius="3" result="thicken"/>
       <!-- Применяем размытие и анимацию его степени для пульсации -->
       <feGaussianBlur in="thicken" stdDeviation="5" result="blurred">
-        <animate attributeName="stdDeviation" values="5;10;5" dur="1s" repeatCount="indefinite"/>
+        <animate attributeName="stdDeviation" values="5;10;5" dur="0.5s" repeatCount="indefinite"/>
       </feGaussianBlur>
       <!-- Применяем цветовое преобразование и анимируем цвета для смены оттенков свечения -->
       <feColorMatrix type="matrix" in="blurred" result="colouredBlur" values="
@@ -17,9 +17,9 @@
         <animate attributeName="values"
           values="
             0 0 0 0 .07  0 0 0 0 .56  0 0 0 0 1  0 0 0 1 0;
-            0 0 0 0 0    0 0  0 1     0 0 0 0 1  0 0 0 1 0;
+            0 0 0 0 0    0 0 1 0 1     0 0 0 0 1  0 0 0 1 0;
             0 0 0 0 .07 0 0 0 0 .56  0 0 0 0 1  0 0 0 1 0"
-          dur="3s" repeatCount="indefinite"/>
+          dur="1.5s" repeatCount="indefinite"/>
       </feColorMatrix>
       <!-- Объединяем эффекты свечения и исходного текста -->
       <feMerge>
