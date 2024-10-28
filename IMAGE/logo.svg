@@ -53,10 +53,10 @@
     @keyframes parallaxGlow {
       0%, 100% {
         filter: url(#neon-glow);
-        transform: translate(-100px, 0);
+        transform: translate(-10px, 0);
       }
       50% {
-        transform: translate(100px, 0px);
+        transform: translate(10px, 0px);
       }
     }
   </style>
