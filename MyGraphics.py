@@ -10,7 +10,7 @@ import math
 import matplotlib.collections as mc
 import time
 
-from pyqtgraph.util.cprint import color
+
 
 # Set the backend to Qt for compatibility with PySide6
 mpl.use('QtAgg')
