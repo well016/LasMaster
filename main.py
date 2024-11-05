@@ -51,7 +51,7 @@ class LasMaster(QMainWindow):
             self.file_name = QFileDialog.getOpenFileName(self, 'Open file', '.', 'las files (*.las)')[0]
             self.las = lasio.read(self.file_name)
             for curve in self.las.curves:
-                if curve.mnemonic in ['DS:1,DS1']:
+                if curve.mnemonic in ['DS:1']:
                     curve.mnemonic='DS'
                 if curve.mnemonic in ['KPGKS^ED','KPEF']:
                     curve.mnemonic = 'KP'
