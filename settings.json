@@ -5,13 +5,19 @@
     "GK_MIN": 1.91,
     "GK_MAX": 19.14,
     "DIFF_NML": 2.5,
-    "GK": "C:/Users/well0/Desktop/PROJECT_ALL/LasMaster/LAS/GK.las",
+    "GK": "C:/Users/well0/Desktop/\u041a\u0430\u0440\u043e\u0442\u0430\u0436\u0438 \u0434\u043b\u044f \u0442\u0435\u0441\u0442\u0430/3361/3361_GK.las",
     "DEPT": "C:/Users/well0/Desktop/PROJECT_ALL/LasMaster/LAS/GK.las",
-    "NML1": "C:/Users/well0/Desktop/PROJECT_ALL/LasMaster/LAS/NML.las",
+    "NML1": "C:/Users/well0/Desktop/\u041a\u0430\u0440\u043e\u0442\u0430\u0436\u0438 \u0434\u043b\u044f \u0442\u0435\u0441\u0442\u0430/3361/3361_DS NML.las",
     "NML2": "C:/Users/well0/Desktop/PROJECT_ALL/LasMaster/LAS/NML.las",
     "NML3": "C:/Users/well0/Desktop/PROJECT_ALL/LasMaster/LAS/NML.las",
     "": "C:/Users/well0/Desktop/PROJECT_ALL/LasMaster/LAS/GK.las",
     "a3": 1.0,
     "a4": 2.0,
-    "Kgl": 0.1
+    "Kgl": 0.1,
+    "KP": "C:/Users/well0/Desktop/\u041a\u0430\u0440\u043e\u0442\u0430\u0436\u0438 \u0434\u043b\u044f \u0442\u0435\u0441\u0442\u0430/3361/3361 KPEf.las",
+    "t1": 35.0,
+    "t2": 50.0,
+    "t3": 70.0,
+    "DS:1": "C:/Users/well0/Desktop/\u041a\u0430\u0440\u043e\u0442\u0430\u0436\u0438 \u0434\u043b\u044f \u0442\u0435\u0441\u0442\u0430/3835/3835 NML DS.las",
+    "DS": "C:/Users/well0/Desktop/\u041a\u0430\u0440\u043e\u0442\u0430\u0436\u0438 \u0434\u043b\u044f \u0442\u0435\u0441\u0442\u0430/3361/3361_DS NML.las"
 }
