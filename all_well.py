@@ -92,6 +92,11 @@ def data_reading():
                     NML2 = las['NML2']
                     DEPTH_NML = las[0]
 
+                if 'U1' in las.keys():
+                    NML1 = las['U1']
+                    NML2 = las['U2']
+                    DEPTH_NML = las[0]
+
                 if 'GK' in las.keys():
                     GK = las['GK']
                     DEPTH_GK = las[0]
@@ -136,10 +141,13 @@ def data_reading():
 
 
 
-
-        common_depth = np.union1d(DEPTH_GK, DEPTH_NML)
+        if DEPTH_GK is not None:
+            common_depth = np.union1d(DEPTH_GK, DEPTH_NML)
         common_depth=np.union1d(common_depth, depth_sw)
         Sw=np.interp(common_depth, depth_sw, Sw)
+        if GK is None:
+            GK = np.zeros(len(common_depth))
+            DEPTH_GK = common_depth
         GK = np.interp(common_depth, DEPTH_GK, GK)
         NML1_interp = np.interp(common_depth, DEPTH_NML, NML1)
         NML2_interp = np.interp(common_depth, DEPTH_NML, NML2)
@@ -228,7 +236,7 @@ def get_u0():
         len_list=[]
         determ=[]
         count=[]
-        for i in range(1,100,1):
+        for i in range(4,5,1):
             gk_min = 0
             gk_max = 1
             diff_nml = i
@@ -244,8 +252,10 @@ def get_u0():
                     diff = 0  # или любое другое значение, если нужно
                 diff_1_2.append(diff)
 
+
             ang = []
             lkgl = []
+
             for gk in GK:
                 ag = round((gk - gk_min) / (gk_max - gk_min), 3)
                 ang.append(ag)
@@ -285,20 +295,44 @@ def get_u0():
             group_collector=df["Интервал глубин,м"].to_numpy()
 
 
+
+
             U0, SW = get_group_u0_sw(group_collector, DEPTH, Sw, norm)
 
+            # Пример данных group_collector
+
+            # Разделяем group_collector на два отдельных списка
+            top = [item[0] for item in group_collector]  # Первый элемент из каждого подсписка
+            bottom = [item[1] for item in group_collector]  # Второй элемент из каждого подсписка
+            # Создаем DataFrame, где каждый список - это отдельный столбец
+
+            if well=='3361':
+                h=pd.DataFrame({
+                    'Глубина':DEPTH,
+                    'Sw':Sw
+                })
+                h.to_excel(f'{well}fdfdfdf{i}.xlsx')
+
+            diff_sw = pd.DataFrame({
+                'Кровля': top ,
+                'Подошва': bottom,
+                'U0': U0,
+                'SW': SW
+            })
+            diff_sw.to_excel(f'{well}{i}.xlsx')
             # Рассчитываем коэффициент корреляции
             ccorrelation_coefficient = np.corrcoef(U0, SW)[0, 1]
 
             # Коэффициент детерминации (R^2)
             r_squared = ccorrelation_coefficient  ** 2
-            print(f"Коэффициент корреляции: {r_squared}, {i}, {len(U0)}")
+
 
             len_list.append(len(U0))
             count.append(i)
             determ.append(r_squared)
         out=pd.DataFrame({'Количество пропластков':len_list,'Коэффициент корреляции':determ,'Расхождение ямк':count})
-        out.to_excel(f'{well}.xlsx')
+
+
 
 
 
